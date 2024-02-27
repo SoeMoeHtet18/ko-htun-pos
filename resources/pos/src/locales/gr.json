@@ -773,10 +773,10 @@
     "product.quantity.title": "Produktmenge",
     "pos.this.product.out.of.stock.message": "Dieses Produkt ist nicht vorrätig",
     "pos.quantity.exceeds.quantity.available.in.stock.message": "Menge überschreitet die im Lager verfügbare Menge",
-    "yes.modal.title":"Ja",
-    "no.modal.title":"NEIN",
+    "yes.modal.title": "Ja",
+    "no.modal.title": "NEIN",
     "language.edit.title": "Sprache bearbeiten",
-    "select.report.label":"Nutzer wählen",
+    "select.report.label": "Nutzer wählen",
     "suppliers.import.title": "Lieferanten importieren",
     "customers.import.title": "Kunden importieren"
 }
