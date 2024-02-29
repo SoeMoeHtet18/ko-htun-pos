@@ -109,7 +109,7 @@ const Login = () => {
                     <div className="col-12 text-center align-items-center justify-content-center">
                         <a href="#" className="image">
                             <Image
-                                className="logo-height image login-company-logo mb-7 mb-sm-10"
+                                className="image login-company-logo mb-7 mb-sm-10"
                                 src={
                                     frontSetting &&
                                     frontSetting.value &&

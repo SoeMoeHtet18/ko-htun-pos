@@ -16,7 +16,7 @@ class DefaultLanguageTableSeeder extends Seeder
     {
         $permissionExits = Permission::where('name', 'manage_language')->first();
 
-        if (! $permissionExits) {
+        if (!$permissionExits) {
             Permission::create([
                 'name' => 'manage_language',
                 'display_name' => 'Manage Language',
@@ -30,18 +30,11 @@ class DefaultLanguageTableSeeder extends Seeder
                 'name' => 'admin',
                 'display_name' => ' Admin',
             ]);
-
         }
         $permission = Permission::where('name', 'manage_language')->pluck('name', 'id');
         $adminRole->givePermissionTo($permission);
 
-        Language::create(['name' => 'Arabic', 'iso_code' => 'ar', 'is_default' => false]);
-        Language::create(['name' => 'Chinese', 'iso_code' => 'cn', 'is_default' => false]);
         Language::create(['name' => 'English', 'iso_code' => 'en', 'is_default' => true]);
-        Language::create(['name' => 'French', 'iso_code' => 'fr', 'is_default' => false]);
-        Language::create(['name' => 'German', 'iso_code' => 'gr', 'is_default' => false]);
-        Language::create(['name' => 'Spanish', 'iso_code' => 'sp', 'is_default' => false]);
-        Language::create(['name' => 'Turkish', 'iso_code' => 'tr', 'is_default' => false]);
-        Language::create(['name' => 'vietnamese', 'iso_code' => 'vi', 'is_default' => false]);
+        Language::create(['name' => 'Myanmar', 'iso_code' => 'mm', 'is_default' => false]);
     }
 }
