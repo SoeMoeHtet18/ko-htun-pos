@@ -473,26 +473,26 @@ export const route = [
         ele: <EditTransfer />,
         permission: Permissions.MANAGE_TRANSFERS,
     },
-    {
-        path: "email-templates",
-        ele: <EmailTemplates />,
-        permission: Permissions.MANAGE_EMAIL_TEMPLATES,
-    },
-    {
-        path: "email-templates/:id",
-        ele: <EditEmailTemplate />,
-        permission: Permissions.MANAGE_EMAIL_TEMPLATES,
-    },
-    {
-        path: "sms-templates",
-        ele: <SmsTemplates />,
-        permission: Permissions.MANAGE_SMS_TEMPLATES,
-    },
-    {
-        path: "sms-templates/:id",
-        ele: <EditSmsTemplate />,
-        permission: Permissions.MANAGE_SMS_TEMPLATES,
-    },
+    // {
+    //     path: "email-templates",
+    //     ele: <EmailTemplates />,
+    //     permission: Permissions.MANAGE_EMAIL_TEMPLATES,
+    // },
+    // {
+    //     path: "email-templates/:id",
+    //     ele: <EditEmailTemplate />,
+    //     permission: Permissions.MANAGE_EMAIL_TEMPLATES,
+    // },
+    // {
+    //     path: "sms-templates",
+    //     ele: <SmsTemplates />,
+    //     permission: Permissions.MANAGE_SMS_TEMPLATES,
+    // },
+    // {
+    //     path: "sms-templates/:id",
+    //     ele: <EditSmsTemplate />,
+    //     permission: Permissions.MANAGE_SMS_TEMPLATES,
+    // },
     {
         path: "report/best-customers",
         ele: <BestCustomerReport />,
