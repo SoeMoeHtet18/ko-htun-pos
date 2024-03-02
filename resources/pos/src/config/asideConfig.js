@@ -500,13 +500,13 @@ export default [
         fontIcon: <FontAwesomeIcon icon={faGear} />,
         to: "/app/settings",
         prefixesPath: "/app/prefixes",
-        mailSettingsPath: "/app/mail-settings",
+        // mailSettingsPath: "/app/mail-settings",
         class: "d-flex",
         isSamePrefix: "true",
         permission: Permissions.MANAGE_SETTING,
         subTitles: [
             { title: "prefix.title" },
-            { title: "mail-settings.title" },
+            // { title: "mail-settings.title" },
         ],
         items: [
             {
@@ -517,10 +517,10 @@ export default [
                 title: getFormattedMessage("prefix.title"),
                 to: "/app/prefixes",
             },
-            {
-                title: getFormattedMessage("mail-settings.title"),
-                to: "/app/mail-settings",
-            },
+            // {
+            //     title: getFormattedMessage("mail-settings.title"),
+            //     to: "/app/mail-settings",
+            // },
         ],
     },
 ];
