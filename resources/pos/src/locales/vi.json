@@ -214,6 +214,7 @@
     "product.input.tax-type.placeholder.label": "Chọn loại thuế",
     "product.input.warehouse.placeholder.label": "Chọn nhà kho",
     "product.input.multiple-image.label": "Nhiều hình ảnh",
+    "product.input.is_purchased.label": "",
     "product.table.image.column.label": "Hình ảnh",
     "product.table.price.column.label": "Giá bán",
     "product.product-details.title": "Thông tin chi tiết sản phẩm",

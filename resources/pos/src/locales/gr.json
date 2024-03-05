@@ -214,6 +214,7 @@
     "product.input.tax-type.placeholder.label": "Wählen Sie Steuerart",
     "product.input.warehouse.placeholder.label": "Wählen Sie Lager",
     "product.input.multiple-image.label": "Mehrfaches Bild",
+    "product.input.is_purchased.label": "",
     "product.table.image.column.label": "Bild",
     "product.table.price.column.label": "Preis",
     "product.product-details.title": "Produktdetails",

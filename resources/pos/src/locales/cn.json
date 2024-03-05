@@ -188,6 +188,7 @@
     "product.edit.title": "编辑产品",
     "product.input.code.label": "代码",
     "product.input.code.placeholder.label": "输入代码",
+    "product.input.is_purchased.label": "",
     "product.input.product-category.label": "产品类别",
     "product.input.product-category.placeholder.label": "选择产品类别",
     "product.input.brand.label": "品牌",

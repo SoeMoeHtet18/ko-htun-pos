@@ -216,6 +216,7 @@
     "product.input.tax-type.placeholder.label": "Choose Tax Type",
     "product.input.warehouse.placeholder.label": "Choose Warehouse",
     "product.input.multiple-image.label": "Multiple Image",
+    "product.input.is_purchased.label": "",
     "product.table.image.column.label": "Image",
     "product.table.price.column.label": "Price",
     "product.product-details.title": "Product Details",

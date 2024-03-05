@@ -218,6 +218,7 @@
     "product.input.tax-type.placeholder.label": "اختر نوع الضريبة",
     "product.input.warehouse.placeholder.label": "اختر المستودع",
     "product.input.multiple-image.label": "صور متعددة",
+    "product.input.is_purchased.label": "",
     "product.table.image.column.label": "صورة",
     "product.table.price.column.label": "السعر",
     "product.product-details.title": "تفاصيل المنتج",

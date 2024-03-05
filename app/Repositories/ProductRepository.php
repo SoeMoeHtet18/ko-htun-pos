@@ -81,25 +81,30 @@ class ProductRepository extends BaseRepository
         try {
             DB::beginTransaction();
             $product = $this->create($input);
-            if (isset($input['images']) && ! empty($input['images'])) {
+            if (isset($input['images']) && !empty($input['images'])) {
                 foreach ($input['images'] as $image) {
-                    $product['image_url'] = $product->addMedia($image)->toMediaCollection(Product::PATH,
-                        config('app.media_disc'));
+                    $product['image_url'] = $product->addMedia($image)->toMediaCollection(
+                        Product::PATH,
+                        config('app.media_disc')
+                    );
                 }
             }
-            $reference_code = 'PR_'.$product->id;
+            $reference_code = 'PR_' . $product->id;
             $this->generateBarcode($input, $reference_code);
-            $product['barcode_image_url'] = Storage::url('product_barcode/barcode-'.$reference_code.'.png');
+            $product['barcode_image_url'] = Storage::url('product_barcode/barcode-' . $reference_code . '.png');
 
             // create purchase
+            $purchaseStock = null;
 
-            $purchaseStock = [
-                'warehouse_id' => $input['purchase_warehouse_id'],
-                'supplier_id' => $input['purchase_supplier_id'],
-                'quantity' => $input['purchase_quantity'],
-                'status' => $input['purchase_status'],
-                'date' => $input['purchase_date'],
-            ];
+            if ($input['is_purchased'] === 'true') {
+                $purchaseStock = [
+                    'warehouse_id' => $input['purchase_warehouse_id'],
+                    'supplier_id' => $input['purchase_supplier_id'],
+                    'quantity' => $input['purchase_quantity'],
+                    'status' => $input['purchase_status'],
+                    'date' => $input['purchase_date'],
+                ];
+            }
 
             //            $purchaseStock = $input['manage_purchase_stock'][0];
 
@@ -123,7 +128,15 @@ class ProductRepository extends BaseRepository
                 $purchaseStock['date'] = $purchaseStock['date'] ?? date('Y/m/d');
 
                 $purchaseInputArray = Arr::only($purchaseStock, [
-                    'supplier_id', 'warehouse_id', 'date', 'status', 'discount', 'tax_rate', 'tax_amount', 'shipping', 'payment_type',
+                    'supplier_id',
+                    'warehouse_id',
+                    'date',
+                    'status',
+                    'discount',
+                    'tax_rate',
+                    'tax_amount',
+                    'shipping',
+                    'payment_type',
                 ]);
 
                 /** @var Purchase $purchase */
@@ -167,7 +180,7 @@ class ProductRepository extends BaseRepository
                 $purchase->purchaseItems()->save($purchaseItem);
 
                 $purchase->update([
-                    'reference_code' => getSettingValue('purchase_code').'_111'.$purchase->id,
+                    'reference_code' => getSettingValue('purchase_code') . '_111' . $purchase->id,
                     'grand_total' => $purchaseStock['sub_total'],
                 ]);
 
@@ -194,16 +207,18 @@ class ProductRepository extends BaseRepository
         try {
             DB::beginTransaction();
             $product = $this->update($input, $id);
-            if (isset($input['images']) && ! empty($input['images'])) {
+            if (isset($input['images']) && !empty($input['images'])) {
                 foreach ($input['images'] as $image) {
-                    $product['image_url'] = $product->addMedia($image)->toMediaCollection(Product::PATH,
-                        config('app.media_disc'));
+                    $product['image_url'] = $product->addMedia($image)->toMediaCollection(
+                        Product::PATH,
+                        config('app.media_disc')
+                    );
                 }
             }
             $product->clearMediaCollection(Product::PRODUCT_BARCODE_PATH);
-            $reference_code = 'PR_'.$product->id;
+            $reference_code = 'PR_' . $product->id;
             $this->generateBarcode($input, $reference_code);
-            $product['barcode_image_url'] = Storage::url('product_barcode/barcode-'.$reference_code.'.png');
+            $product['barcode_image_url'] = Storage::url('product_barcode/barcode-' . $reference_code . '.png');
 
             DB::commit();
 
@@ -236,8 +251,10 @@ class ProductRepository extends BaseRepository
                 break;
         }
 
-        Storage::disk(config('app.media_disc'))->put('product_barcode/barcode-'.$reference_code.'.png',
-            $generator->getBarcode($input['code'], $barcodeType, 4, 70));
+        Storage::disk(config('app.media_disc'))->put(
+            'product_barcode/barcode-' . $reference_code . '.png',
+            $generator->getBarcode($input['code'], $barcodeType, 4, 70)
+        );
 
         return true;
     }
