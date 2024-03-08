@@ -28,6 +28,7 @@ export const apiBaseURL = {
     QUOTATIONS: "/quotations",
     QUOTATIONS_DETAILS: "quotation-info",
     ADJUSTMENTS: "/adjustments",
+    CONVERSIONS: "/conversions",
     SETTINGS: "/settings",
     CACHE_CLEAR: "/cache-clear",
     CHANGE_PASSWORD: "change-password",
@@ -400,6 +401,15 @@ export const adjustMentActionType = {
     ADJUSTMENT_DETAILS: "ADJUSTMENT_DETAILS",
 };
 
+export const conversionActionType = {
+    FETCH_CONVERSIONS: "FETCH_CONVERSIONS",
+    FETCH_CONVERSION: "FETCH_CONVERSION",
+    ADD_CONVERSIONS: "ADD_CONVERSIONS",
+    EDIT_CONVERSIONS: "EDIT_CONVERSIONS",
+    DELETE_CONVERSIONS: "DELETE_CONVERSIONS",
+    CONVERSION_DETAILS: "CONVERSION_DETAILS",
+}
+
 export const saleReturnActionType = {
     FETCH_SALES_RETURN: "FETCH_SALES_RETURN",
     FETCH_SALE_RETURN: "FETCH_SALE_RETURN",
@@ -566,6 +576,7 @@ export const Permissions = {
     MANAGE_REPORT: "manage_report",
     MANAGE_PRINT_BARCODE: "manage_print_barcode",
     MANAGE_ADJUSTMENTS: "manage_adjustments",
+    MANAGE_CONVERSIONS: "manage_conversions",
     MANAGE_TRANSFERS: "manage_transfers",
     MANAGE_REPORTS: "manage_reports",
     MANAGE_EMAIL_TEMPLATES: "manage_email_templates",

@@ -10,7 +10,7 @@ export default (state = {}, action) => {
             return action.payload;
         case adjustMentActionType.EDIT_ADJUSTMENTS:
             return state.map(item => item.id === +action.payload.id ? action.payload : item);
-        case adjustMentActionType.DELETE_SALE:
+        case adjustMentActionType.DELETE_ADJUSTMENT:
             return state.filter(item => item.id !== action.payload);
         default:
             return state;

@@ -20,6 +20,7 @@ export const fetchAdjustments =
         }
         const admin = true;
         let url = apiBaseURL.ADJUSTMENTS;
+        
         if (
             !_.isEmpty(filter) &&
             (filter.page || filter.pageSize || filter.search)
