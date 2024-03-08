@@ -59,7 +59,7 @@ class AdjustmentRepository extends BaseRepository
                 'date', 'warehouse_id', 'total_products',
             ]);
             $adjustment = Adjustment::create($adjustmentInputArray);
-            $reference_code = 'AD_111'.$adjustment->id;
+            $reference_code = 'AD_111' . $adjustment->id;
             $adjustment->update(['reference_code' => $reference_code]);
 
             $adjustment = $this->storeAdjustmentItems($adjustment, $input);
@@ -80,7 +80,7 @@ class AdjustmentRepository extends BaseRepository
             AdjustmentItem::Create($adjustmentItem);
 
             $product = ManageStock::whereWarehouseId($adjustment->warehouse_id)->whereProductId($adjustmentItem['product_id'])->first();
-            if (! empty($product)) {
+            if (!empty($product)) {
                 if ($adjustmentItem['method_type'] == AdjustmentItem::METHOD_ADDITION) {
                     $totalQuantity = $product->quantity + $adjustmentItem['quantity'];
                     $product->update([
@@ -149,7 +149,7 @@ class AdjustmentRepository extends BaseRepository
 
                 AdjustmentItem::Create($adjustmentItem);
 
-                if (! empty($product)) {
+                if (!empty($product)) {
                     if ($adjustmentItem['method_type'] == AdjustmentItem::METHOD_ADDITION) {
                         $totalQuantity = $product->quantity + $adjustmentItem['quantity'];
                         $product->update([
@@ -206,7 +206,7 @@ class AdjustmentRepository extends BaseRepository
 
         $removeItemIds = array_diff($adjustmentItmOldIds, $adjustmentItemIds);
 
-        if (! empty(array_values($removeItemIds))) {
+        if (!empty(array_values($removeItemIds))) {
             foreach ($removeItemIds as $removeItemId) {
                 $oldItem = AdjustmentItem::whereId($removeItemId)->firstOrFail();
                 $existProductStock = ManageStock::whereWarehouseId($adjustment->warehouse_id)->whereProductId($oldItem->product_id)->first();

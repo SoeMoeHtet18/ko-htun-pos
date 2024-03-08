@@ -15,7 +15,7 @@ const AsideMenu = ( props ) =>
     const intl = useIntl();
     const { id } = useParams();
     const [ searchTerm, setSearchTerm ] = useState( '' )
-    const updatedLanguage = localStorage.getItem( Tokens.UPDATED_LANGUAGE )
+    const updatedLanguage = localStorage.getItem( Tokens.UPDATED_LANGUAGE );
 
     useEffect( () =>
     {

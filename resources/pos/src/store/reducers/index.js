@@ -97,6 +97,8 @@ import baseUnitsReducres from './baseUnitsReducres';
 import baseUnitReducer from "./baseUnitReducer";
 import posCloseRegisterDetailsReducer from './pos/posCloseRegisterDetailsReducer';
 import posRegisterReportDetailsReducer from './pos/posRegisterReportDetailsReducer';
+import conversionReducer from './conversionReducer';
+import conversionDetailsReducer from './conversionDetailsReducer';
 
 export default combineReducers( {
     loginUser: loginReducers,
@@ -196,5 +198,7 @@ export default combineReducers( {
     baseUnits: baseUnitsReducres,
     base: baseUnitReducer,
     closeRegisterDetails: posCloseRegisterDetailsReducer,
-    registerReportDetails: posRegisterReportDetailsReducer
+    registerReportDetails: posRegisterReportDetailsReducer,
+    conversions: conversionReducer,
+    conversionDetails: conversionDetailsReducer
 } );

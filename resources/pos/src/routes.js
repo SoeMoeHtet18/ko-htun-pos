@@ -86,6 +86,9 @@ import Language from "./components/languages/Language";
 import EditLanguageData from "./components/languages/EditLanguageData";
 import BaseUnits from "./components/base-unit/BaseUnits";
 import RegisterReport from "./components/report/registerReport/RegisterReport";
+import Conversions from "./components/conversions/Conversions";
+import CreateConversion from "./components/conversions/CreateConversion";
+import EditConversion from "./components/conversions/EditConversion";
 
 export const route = [
     {
@@ -227,6 +230,21 @@ export const route = [
         path: "adjustments/:id",
         ele: <EditAdjustMent />,
         permission: Permissions.MANAGE_ADJUSTMENTS,
+    },
+    {
+        path: "conversions",
+        ele: <Conversions />,
+        permission: Permissions.MANAGE_CONVERSIONS,
+    },
+    {
+        path: "conversions/create",
+        ele: <CreateConversion />,
+        permission: Permissions.MANAGE_CONVERSIONS,
+    },
+    {
+        path: "conversions/:id",
+        ele: <EditConversion />,
+        permission: Permissions.MANAGE_CONVERSIONS,
     },
     {
         path: "settings",
