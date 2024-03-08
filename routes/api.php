@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AdjustmentAPIController;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BaseUnitAPIController;
 use App\Http\Controllers\API\BrandAPIController;
+use App\Http\Controllers\API\ConversionAPIController;
 use App\Http\Controllers\API\CouponCodeAPIController;
 use App\Http\Controllers\API\CurrencyAPIController;
 use App\Http\Controllers\API\CustomerAPIController;
@@ -82,8 +83,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // product category route
     //    Route::middleware('permission:manage_product_categories')->group(function () {
     Route::resource('product-categories', ProductCategoryAPIController::class);
-    Route::post('product-categories/{product_category}',
-        [ProductCategoryAPIController::class, 'update'])->name('product-category');
+    Route::post(
+        'product-categories/{product_category}',
+        [ProductCategoryAPIController::class, 'update']
+    )->name('product-category');
     //    });
 
     Route::get('product-categories', [ProductCategoryAPIController::class, 'index']);
@@ -110,10 +113,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // products route
 
     Route::resource('products', ProductAPIController::class);
-    Route::post('products/{product}',
-        [ProductAPIController::class, 'update']);
-    Route::delete('products-image-delete/{mediaId}',
-        [ProductAPIController::class, 'productImageDelete'])->name('products-image-delete');
+    Route::post(
+        'products/{product}',
+        [ProductAPIController::class, 'update']
+    );
+    Route::delete(
+        'products-image-delete/{mediaId}',
+        [ProductAPIController::class, 'productImageDelete']
+    )->name('products-image-delete');
 
     Route::get('products', [ProductAPIController::class, 'index']);
     Route::get('get-all-products', [ProductAPIController::class, 'getAllProducts']);
@@ -125,8 +132,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('import-products', [ProductAPIController::class, 'importProducts']);
     Route::post('import-customers', [CustomerAPIController::class, 'importCustomers']);
 
-    Route::get('products-export-excel/{id?}',
-        [ProductAPIController::class, 'getProductExportExcel'])->name('products-export-excel');
+    Route::get(
+        'products-export-excel/{id?}',
+        [ProductAPIController::class, 'getProductExportExcel']
+    )->name('products-export-excel');
 
     Route::resource('transfers', TransferAPIController::class);
 
@@ -183,10 +192,14 @@ Route::middleware('auth:sanctum')->group(function () {
     //    Route::middleware('permission:manage_sale_return')->group(function () {
     Route::resource('sales-return', SaleReturnAPIController::class);
     Route::get('sales-return-edit/{id}', [SaleReturnAPIController::class, 'editBySale']);
-    Route::get('sale-return-info/{sales_return}',
-        [SaleReturnAPIController::class, 'saleReturnInfo'])->name('sale-return-info');
-    Route::get('sale-return-pdf-download/{sale_return}',
-        [SaleReturnAPIController::class, 'pdfDownload'])->name('sale-return-pdf-download');
+    Route::get(
+        'sale-return-info/{sales_return}',
+        [SaleReturnAPIController::class, 'saleReturnInfo']
+    )->name('sale-return-info');
+    Route::get(
+        'sale-return-pdf-download/{sale_return}',
+        [SaleReturnAPIController::class, 'pdfDownload']
+    )->name('sale-return-pdf-download');
     //    });
 
     //expense category route
@@ -225,8 +238,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //purchase routes
     Route::resource('purchases', PurchaseAPIController::class);
-    Route::get('purchase-pdf-download/{purchase}',
-        [PurchaseAPIController::class, 'pdfDownload'])->name('purchase-pdf-download');
+    Route::get(
+        'purchase-pdf-download/{purchase}',
+        [PurchaseAPIController::class, 'pdfDownload']
+    )->name('purchase-pdf-download');
     Route::get('purchase-info/{purchase}', [PurchaseAPIController::class, 'purchaseInfo'])->name('purchase-info');
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -234,49 +249,75 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('adjustments', AdjustmentAPIController::class);
     //    });
 
+    Route::resource('conversions', ConversionAPIController::class);
+
     //purchase return routes
     Route::resource('purchases-return', PurchaseReturnAPIController::class);
-    Route::get('purchase-return-info/{purchase_return}',
-        [PurchaseReturnAPIController::class, 'purchaseReturnInfo'])->name('purchase-return-info');
-    Route::get('purchase-return-pdf-download/{purchase_return}',
-        [PurchaseReturnAPIController::class, 'pdfDownload'])->name('purchase-return-pdf-download');
+    Route::get(
+        'purchase-return-info/{purchase_return}',
+        [PurchaseReturnAPIController::class, 'purchaseReturnInfo']
+    )->name('purchase-return-info');
+    Route::get(
+        'purchase-return-pdf-download/{purchase_return}',
+        [PurchaseReturnAPIController::class, 'pdfDownload']
+    )->name('purchase-return-pdf-download');
 
     //Language Change
     Route::post('change-language', [UserAPIController::class, 'updateLanguage']);
 
     // warehouse report
     Route::get('warehouse-report', [WarehouseAPIController::class, 'warehouseReport'])->name('report-warehouse');
-    Route::get('sales-report-excel',
-        [ReportAPIController::class, 'getWarehouseSaleReportExcel'])->name('report-getSaleReportExcel');
-    Route::get('purchases-report-excel',
-        [ReportAPIController::class, 'getWarehousePurchaseReportExcel']);
-    Route::get('sales-return-report-excel',
-        [ReportAPIController::class, 'getWarehouseSaleReturnReportExcel'])->name('report-getSaleReturnReportExcel');
-    Route::get('purchases-return-report-excel',
+    Route::get(
+        'sales-report-excel',
+        [ReportAPIController::class, 'getWarehouseSaleReportExcel']
+    )->name('report-getSaleReportExcel');
+    Route::get(
+        'purchases-report-excel',
+        [ReportAPIController::class, 'getWarehousePurchaseReportExcel']
+    );
+    Route::get(
+        'sales-return-report-excel',
+        [ReportAPIController::class, 'getWarehouseSaleReturnReportExcel']
+    )->name('report-getSaleReturnReportExcel');
+    Route::get(
+        'purchases-return-report-excel',
         [
             ReportAPIController::class, 'getWarehousePurchaseReturnReportExcel',
-        ])->name('report-getPurchaseReturnReportExcel');
-    Route::get('expense-report-excel',
-        [ReportAPIController::class, 'getWarehouseExpenseReportExcel'])->name('report-getExpenseReportExcel');
+        ]
+    )->name('report-getPurchaseReturnReportExcel');
+    Route::get(
+        'expense-report-excel',
+        [ReportAPIController::class, 'getWarehouseExpenseReportExcel']
+    )->name('report-getExpenseReportExcel');
 
     //sale report
-    Route::get('total-sale-report-excel',
-        [ReportAPIController::class, 'getSalesReportExcel'])->name('report-getSalesReportExcel');
+    Route::get(
+        'total-sale-report-excel',
+        [ReportAPIController::class, 'getSalesReportExcel']
+    )->name('report-getSalesReportExcel');
 
     // purchase report
-    Route::get('total-purchase-report-excel',
-        [ReportAPIController::class, 'getPurchaseReportExcel']);
+    Route::get(
+        'total-purchase-report-excel',
+        [ReportAPIController::class, 'getPurchaseReportExcel']
+    );
     // top-selling product report
-    Route::get('top-selling-product-report-excel',
-        [ReportAPIController::class, 'getSellingProductReportExcel']);
-    Route::get('top-selling-product-report',
-        [ReportAPIController::class, 'getSellingProductReport']);
+    Route::get(
+        'top-selling-product-report-excel',
+        [ReportAPIController::class, 'getSellingProductReportExcel']
+    );
+    Route::get(
+        'top-selling-product-report',
+        [ReportAPIController::class, 'getSellingProductReport']
+    );
 
     Route::get('supplier-report', [ReportAPIController::class, 'getSupplierReport']);
 
     Route::get('supplier-purchases-report/{supplier_id}', [ReportAPIController::class, 'getSupplierPurchasesReport']);
-    Route::get('supplier-purchases-return-report/{supplier_id}',
-        [ReportAPIController::class, 'getSupplierPurchasesReturnReport']);
+    Route::get(
+        'supplier-purchases-return-report/{supplier_id}',
+        [ReportAPIController::class, 'getSupplierPurchasesReturnReport']
+    );
     Route::get('supplier-report-info/{supplier_id}', [ReportAPIController::class, 'getSupplierInfo']);
 
     // profit loss report
@@ -293,12 +334,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('customer-info/{customer}', [ReportAPIController::class, 'getCustomerInfo']);
     Route::get('customer-pdf-download/{customer}', [CustomerAPIController::class, 'pdfDownload']);
     Route::get('customer-sales-pdf-download/{customer}', [CustomerAPIController::class, 'customerSalesPdfDownload']);
-    Route::get('customer-quotations-pdf-download/{customer}',
-        [CustomerAPIController::class, 'customerQuotationsPdfDownload']);
-    Route::get('customer-returns-pdf-download/{customer}',
-        [CustomerAPIController::class, 'customerReturnsPdfDownload']);
-    Route::get('customer-payments-pdf-download/{customer}',
-        [CustomerAPIController::class, 'customerPaymentsPdfDownload']);
+    Route::get(
+        'customer-quotations-pdf-download/{customer}',
+        [CustomerAPIController::class, 'customerQuotationsPdfDownload']
+    );
+    Route::get(
+        'customer-returns-pdf-download/{customer}',
+        [CustomerAPIController::class, 'customerReturnsPdfDownload']
+    );
+    Route::get(
+        'customer-payments-pdf-download/{customer}',
+        [CustomerAPIController::class, 'customerPaymentsPdfDownload']
+    );
 
     //Warehouse Products alert Quantity Report
     Route::get('product-stock-alerts/{warehouse_id?}', [ReportAPIController::class, 'stockAlerts']);
@@ -306,12 +353,18 @@ Route::middleware('auth:sanctum')->group(function () {
     //stock report
     Route::get('stock-report', [ManageStockAPIController::class, 'stockReport'])->name('report-stockReport');
     Route::get('stock-report-excel', [ReportAPIController::class, 'stockReportExcel'])->name('report-stockReportExcel');
-    Route::get('get-sale-product-report',
-        [SaleAPIController::class, 'getSaleProductReport'])->name('report-get-sale-product-report');
-    Route::get('get-purchase-product-report',
-        [PurchaseAPIController::class, 'getPurchaseProductReport'])->name('report-get-purchase-product-report');
-    Route::get('get-sale-return-product-report',
-        [SaleReturnAPIController::class, 'getSaleReturnProductReport']);
+    Route::get(
+        'get-sale-product-report',
+        [SaleAPIController::class, 'getSaleProductReport']
+    )->name('report-get-sale-product-report');
+    Route::get(
+        'get-purchase-product-report',
+        [PurchaseAPIController::class, 'getPurchaseProductReport']
+    )->name('report-get-purchase-product-report');
+    Route::get(
+        'get-sale-return-product-report',
+        [SaleReturnAPIController::class, 'getSaleReturnProductReport']
+    );
     Route::get('get-purchase-return-product-report', [
         PurchaseReturnAPIController::class, 'getPurchaseReturnProductReport',
     ]);
@@ -323,10 +376,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // stock report excel
     Route::get('get-product-sale-report-excel', [ReportAPIController::class, 'getProductSaleReportExport']);
     Route::get('get-product-purchase-report-excel', [ReportAPIController::class, 'getPurchaseProductReportExport']);
-    Route::get('get-product-sale-return-report-excel',
-        [ReportAPIController::class, 'getSaleReturnProductReportExport']);
-    Route::get('get-product-purchase-return-report-excel',
-        [ReportAPIController::class, 'getPurchaseReturnProductReportExport']);
+    Route::get(
+        'get-product-sale-return-report-excel',
+        [ReportAPIController::class, 'getSaleReturnProductReportExport']
+    );
+    Route::get(
+        'get-product-purchase-return-report-excel',
+        [ReportAPIController::class, 'getPurchaseReturnProductReportExport']
+    );
     Route::get('get-product-count', [ReportAPIController::class, 'getProductQuantity']);
 
     Route::get('config', [UserAPIController::class, 'config']);
@@ -344,12 +401,14 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('register', [AuthController::class, 'register']);
 
-Route::post('/forgot-password',
-    [AuthController::class, 'sendPasswordResetLinkEmail'])->middleware('throttle:5,1')->name('password.email');
+Route::post(
+    '/forgot-password',
+    [AuthController::class, 'sendPasswordResetLinkEmail']
+)->middleware('throttle:5,1')->name('password.email');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 
 Route::get('front-setting', [SettingAPIController::class, 'getFrontSettingsValue'])->name('front-settings');
 
 Route::post('validate-auth-token', [AuthController::class, 'isValidToken']);
 
-require __DIR__.'/m1.php';
+require __DIR__ . '/m1.php';

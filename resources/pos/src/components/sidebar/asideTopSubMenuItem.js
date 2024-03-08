@@ -210,6 +210,12 @@ const AsideTopSubMenuItem = (props) => {
                                             mainItems?.subPath?.barcodeSubPath
                                         ) ||
                                         location.pathname.includes(
+                                            mainItems?.subPath?.adjustmentsSubPath
+                                        ) ||
+                                        location.pathname.includes(
+                                            mainItems?.subPath?.conversionsSubPath
+                                        ) ||
+                                        location.pathname.includes(
                                             mainItems?.subPath?.purchasesSubPath
                                         ) ||
                                         location.pathname.includes(

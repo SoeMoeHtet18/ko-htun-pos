@@ -30,6 +30,7 @@ import {
     faRulerHorizontal,
     faLanguage,
     faShieldHalved,
+    faRotate
 } from "@fortawesome/free-solid-svg-icons";
 import { getFormattedMessage } from "../shared/sharedMethod";
 
@@ -122,11 +123,28 @@ export default [
         fontIcon: <FontAwesomeIcon icon={faMapLocation} />,
         to: "/app/adjustments",
         class: "d-flex",
+        is_submenu: "true",
         permission: Permissions.MANAGE_ADJUSTMENTS,
-        items: [
+        subPath: {
+            adjustmentsSubPath: "/app/adjustments",
+            conversionsSubPath: "/app/conversions",
+        },
+        subMenu: [
             {
-                title: getFormattedMessage("adjustments.title"),
+                title: "adjustments.title",
                 to: "/app/adjustments",
+                name: "adjustments",
+                class: "d-flex",
+                fontIcon: <FontAwesomeIcon icon={faMapLocation} />,
+                permission: Permissions.MANAGE_ADJUSTMENTS,
+            },
+            {
+                title: "conversions.title",
+                to: "/app/conversions",
+                name: "conversions",
+                class: "d-flex",
+                fontIcon: <FontAwesomeIcon icon={faRotate} />,
+                permission: Permissions.MANAGE_CONVERSIONS,
             },
         ],
     },

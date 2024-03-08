@@ -63,13 +63,13 @@ class ProductAPIController extends AppBaseController
     public function store(CreateProductRequest $request)
     {
         $input = $request->all();
-        if ($input['barcode_symbol'] == Product::EAN8 && strlen($input['code']) != 7) {
-            return $this->sendError('Please enter 7 digit code');
-        }
+        // if ($input['barcode_symbol'] == Product::EAN8 && strlen($input['code']) != 7) {
+        //     return $this->sendError('Please enter 7 digit code');
+        // }
 
-        if ($input['barcode_symbol'] == Product::UPC && strlen($input['code']) != 11) {
-            return $this->sendError(' Please enter 11 digit code');
-        }
+        // if ($input['barcode_symbol'] == Product::UPC && strlen($input['code']) != 11) {
+        //     return $this->sendError(' Please enter 11 digit code');
+        // }
 
         $product = $this->productRepository->storeProduct($input);
 

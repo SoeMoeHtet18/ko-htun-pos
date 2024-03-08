@@ -65,6 +65,7 @@ const ProductForm = ( props ) => {
         sale_quantity_limit: "",
         notes: '',
         images: [],
+        is_purchased: false,
         warehouse_id: '',
         supplier_id: '',
         add_stock: '',
@@ -92,10 +93,10 @@ const ProductForm = ( props ) => {
         tax_type: '',
         notes: '',
         images: [],
-        warehouse_id: '',
-        supplier_id: '',
-        add_stock: '',
-        status_id: ''
+        // warehouse_id: '',
+        // supplier_id: '',
+        // add_stock: '',
+        // status_id: ''
     } );
 
     useEffect( () => {
@@ -201,6 +202,11 @@ const ProductForm = ( props ) => {
         setErrors( '' );
     };
 
+    const onIsPurchasedChange = (e) => {
+        setProductValue( productValue => ( {...productValue, is_purchased: e.target.checked } ) );
+        setErrors( '' );
+    }
+
     // tax type dropdown functionality
     const taxTypeFilterOptions = getFormattedOptions( taxMethodOptions )
 
@@ -254,9 +260,11 @@ const ProductForm = ( props ) => {
             errorss[ 'product_category_id' ] = getFormattedMessage( 'product.input.product-category.validate.label' );
         } else if ( !productValue[ 'brand_id' ] ) {
             errorss[ 'brand_id' ] = getFormattedMessage( 'product.input.brand.validate.label' );
-        } else if ( !productValue[ 'barcode_symbol' ] ) {
-            errorss[ 'barcode_symbol' ] = getFormattedMessage( 'product.input.barcode-symbology.validate.label' );
-        } else if ( !productValue[ 'product_cost' ] ) {
+        }
+        //  else if ( !productValue[ 'barcode_symbol' ] ) {
+        //     errorss[ 'barcode_symbol' ] = getFormattedMessage( 'product.input.barcode-symbology.validate.label' );
+        // } 
+        else if ( !productValue[ 'product_cost' ] ) {
             errorss[ 'product_cost' ] = getFormattedMessage( 'product.input.product-cost.validate.label' );
         } else if ( !productValue[ 'product_price' ] ) {
             errorss[ 'product_price' ] = getFormattedMessage( 'product.input.product-price.validate.label' );
@@ -274,19 +282,21 @@ const ProductForm = ( props ) => {
             errorss[ 'order_tax' ] = getFormattedMessage( 'product.input.order-tax.valid.validate.label' );
         } else if ( productValue[ 'notes' ] && productValue[ 'notes' ].length > 100 ) {
             errorss[ 'notes' ] = getFormattedMessage( 'globally.input.notes.validate.label' );
-        } else if ( productValue[ 'isEdit' ] === false ) {
-            if ( !productValue[ 'warehouse_id' ] ) {
-                errorss[ 'warehouse_id' ] = getFormattedMessage( 'purchase.select.warehouse.validate.label' );
-            } else if ( !productValue[ 'supplier_id' ] ) {
-                errorss[ 'supplier_id' ] = getFormattedMessage( 'purchase.select.supplier.validate.label' );
-            } else if ( !productValue[ 'add_stock' ] ) {
-                errorss[ 'add_stock' ] = getFormattedMessage( 'purchase.product.quantity.validate.label' );
-            } else if ( !productValue[ 'status_id' ] ) {
-                errorss[ 'status_id' ] = getFormattedMessage( 'globally.status.validate.label' )
-            } else {
-                isValid = true;
-            }
-        } else {
+        } 
+        // else if ( productValue[ 'isEdit' ] === false ) {
+        //     if ( !productValue[ 'warehouse_id' ] ) {
+        //         errorss[ 'warehouse_id' ] = getFormattedMessage( 'purchase.select.warehouse.validate.label' );
+        //     } else if ( !productValue[ 'supplier_id' ] ) {
+        //         errorss[ 'supplier_id' ] = getFormattedMessage( 'purchase.select.supplier.validate.label' );
+        //     } else if ( !productValue[ 'add_stock' ] ) {
+        //         errorss[ 'add_stock' ] = getFormattedMessage( 'purchase.product.quantity.validate.label' );
+        //     } else if ( !productValue[ 'status_id' ] ) {
+        //         errorss[ 'status_id' ] = getFormattedMessage( 'globally.status.validate.label' )
+        //     } else {
+        //         isValid = true;
+        //     }
+        // }
+        else {
             isValid = true;
         }
         setErrors( errorss );
@@ -324,11 +334,12 @@ const ProductForm = ( props ) => {
         formData.append( 'code', data.code );
         formData.append( 'product_category_id', data.product_category_id.value );
         formData.append( 'brand_id', data.brand_id.value );
-        if ( data.barcode_symbol[ 0 ] ) {
-            formData.append( 'barcode_symbol', data.barcode_symbol[ 0 ].value );
-        } else {
-            formData.append( 'barcode_symbol', data.barcode_symbol.value );
-        }
+        // if ( data.barcode_symbol[ 0 ] ) {
+        //     formData.append( 'barcode_symbol', data.barcode_symbol[ 0 ].value );
+        // } else {
+        //     formData.append( 'barcode_symbol', data.barcode_symbol.value );
+        // }
+        formData.append( 'barcode_symbol', 1 );
         formData.append( 'product_cost', data.product_cost );
         formData.append( 'product_price', data.product_price );
         formData.append( 'product_unit', data.product_unit && data.product_unit[ 0 ] ? data.product_unit[ 0 ].value : data.product_unit.value );
@@ -343,7 +354,8 @@ const ProductForm = ( props ) => {
             formData.append( 'tax_type', data.tax_type.value ? data.tax_type.value : 1 );
         }
         formData.append( 'notes', data.notes );
-        if ( data.isEdit === false ) {
+        formData.append( 'is_purchased', data.is_purchased );
+        if ( data.isEdit === false && data.is_purchased ) {
             formData.append( 'purchase_supplier_id', data.supplier_id.value );
             formData.append( 'purchase_warehouse_id', data.warehouse_id.value );
             formData.append( 'purchase_date', moment( data.date ).format( 'YYYY-MM-DD' ) );
@@ -420,14 +432,14 @@ const ProductForm = ( props ) => {
                                             data={brands} onChange={onBrandChange}
                                             value={productValue.brand_id} />
                                     </div>
-                                    <div className='col-md-6 mb-3'>
+                                    {/* <div className='col-md-6 mb-3'>
                                         <ReactSelect
                                             title={getFormattedMessage( 'product.input.barcode-symbology.label' )}
                                             placeholder={placeholderText( 'product.input.barcode-symbology.placeholder.label' )}
                                             defaultValue={selectedBarcode} errors={errors[ 'barcode_symbol' ]}
                                             data={barcodes} onChange={onBarcodeChange}
                                             value={productValue.barcode_symbol} />
-                                    </div>
+                                    </div> */}
                                     <div className='col-md-6 mb-3'>
                                         <label
                                             className='form-label'>{getFormattedMessage( 'product.input.product-cost.label' )}: </label>
@@ -563,48 +575,70 @@ const ProductForm = ( props ) => {
                                 <MultipleImage product={singleProduct} fetchFiles={onChangeFiles}
                                     transferImage={transferImage} />
                             </div>
+
                             {
                                 singleProduct ? '' :
                                     <div>
-                                        <div className='col-md-12 mb-3'>
-                                            <h1 className={"text-center"}>{getFormattedMessage( 'add-stock.title' )} : </h1>
+                                        <div className='mt-3'>
+                                            <div>{getFormattedMessage( "product.input.is_purchased.label" )}:</div>
+                                            <div className="d-flex align-items-center mt-2">
+                                                <label className="form-check form-switch form-switch-sm">
+                                                    <input type='checkbox'
+                                                        name='is_purchased'
+                                                        onChange={( event ) => onIsPurchasedChange( event )}
+                                                        className='me-3 form-check-input cursor-pointer' />
+                                                    <div className='control__indicator' />
+                                                </label>
+                                                {/* <span className="switch-slider" data-checked="✓" data-unchecked="✕">
+                                                    {errors[ 'Currency_icon_Right_side' ] ? errors[ 'Currency_icon_Right_side' ] : null}
+                                                </span> */}
+            
+                                            </div>
                                         </div>
-                                        <div className='col-md-12 mb-3'>
-                                            <ReactSelect data={warehouses} onChange={onWarehouseChange}
-                                                defaultValue={productValue.warehouse_id}
-                                                isWarehouseDisable={true}
-                                                title={getFormattedMessage( 'warehouse.title' )}
-                                                errors={errors[ 'warehouse_id' ]}
-                                                placeholder={placeholderText( 'purchase.select.warehouse.placeholder.label' )} />
-                                        </div>
-                                        <div className='col-md-12 mb-3'>
-                                            <ReactSelect data={suppliers} onChange={onSupplierChange}
-                                                defaultValue={productValue.supplier_id}
-                                                title={getFormattedMessage( 'supplier.title' )}
-                                                errors={errors[ 'supplier_id' ]}
-                                                placeholder={placeholderText( 'purchase.select.supplier.placeholder.label' )} />
-                                        </div>
-                                        <div className='col-md-12 mb-3'>
-                                            <label
-                                                className='form-label'>{getFormattedMessage( 'product-quantity.add.title' )}:</label>
-                                            <span className='required' />
-                                            <input type='number' name='add_stock'
-                                                className='form-control'
-                                                placeholder={placeholderText( 'product-quantity.add.title' )}
-                                                onKeyPress={( event ) => decimalValidate( event )}
-                                                onChange={( e ) => onChangeInput( e )}
-                                                value={productValue.add_stock} min={1} />
-                                            <span
-                                                className='text-danger d-block fw-400 fs-small mt-2'>{errors[ 'add_stock' ] ? errors[ 'add_stock' ] : null}</span>
-                                        </div>
-                                        <div className='col-md-12'>
-                                            <ReactSelect multiLanguageOption={statusFilterOptions}
-                                                onChange={onStatusChange} name='status'
-                                                title={getFormattedMessage( 'purchase.select.status.label' )}
-                                                value={productValue.status_id} errors={errors[ 'status_id' ]}
-                                                defaultValue={statusDefaultValue[ 0 ]}
-                                                placeholder={getFormattedMessage( 'purchase.select.status.label' )} />
-                                        </div>
+                                        { productValue.is_purchased && (
+                                            <>
+                                                <div className='col-md-12 mb-3'>
+                                                    <h1 className={"text-center"}>{getFormattedMessage( 'add-stock.title' )} : </h1>
+                                                </div>
+                                                <div className='col-md-12 mb-3'>
+                                                    <ReactSelect data={warehouses} onChange={onWarehouseChange}
+                                                        defaultValue={productValue.warehouse_id}
+                                                        isWarehouseDisable={true}
+                                                        title={getFormattedMessage( 'warehouse.title' )}
+                                                        errors={errors[ 'warehouse_id' ]}
+                                                        placeholder={placeholderText( 'purchase.select.warehouse.placeholder.label' )} />
+                                                </div>
+                                                <div className='col-md-12 mb-3'>
+                                                    <ReactSelect data={suppliers} onChange={onSupplierChange}
+                                                        defaultValue={productValue.supplier_id}
+                                                        title={getFormattedMessage( 'supplier.title' )}
+                                                        errors={errors[ 'supplier_id' ]}
+                                                        placeholder={placeholderText( 'purchase.select.supplier.placeholder.label' )} />
+                                                </div>
+                                                <div className='col-md-12 mb-3'>
+                                                    <label
+                                                        className='form-label'>{getFormattedMessage( 'product-quantity.add.title' )}:</label>
+                                                    <span className='required' />
+                                                    <input type='number' name='add_stock'
+                                                        className='form-control'
+                                                        placeholder={placeholderText( 'product-quantity.add.title' )}
+                                                        onKeyPress={( event ) => decimalValidate( event )}
+                                                        onChange={( e ) => onChangeInput( e )}
+                                                        value={productValue.add_stock} min={1} />
+                                                    <span
+                                                        className='text-danger d-block fw-400 fs-small mt-2'>{errors[ 'add_stock' ] ? errors[ 'add_stock' ] : null}</span>
+                                                </div>
+                                                <div className='col-md-12'>
+                                                    <ReactSelect multiLanguageOption={statusFilterOptions}
+                                                        onChange={onStatusChange} name='status'
+                                                        title={getFormattedMessage( 'purchase.select.status.label' )}
+                                                        value={productValue.status_id} errors={errors[ 'status_id' ]}
+                                                        defaultValue={statusDefaultValue[ 0 ]}
+                                                        placeholder={getFormattedMessage( 'purchase.select.status.label' )} />
+                                                </div>
+                                            
+                                            </>
+                                        )}
                                     </div>
                             }
                         </div>
