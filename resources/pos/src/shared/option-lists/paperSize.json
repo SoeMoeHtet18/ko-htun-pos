@@ -30,5 +30,9 @@
     {
         "label": "10 per sheet (4 * 2)",
         "value": 8
+    },
+    {
+        "label": "1 per sheet (1.18 * 0.787)",
+        "value": 9
     }
 ]
