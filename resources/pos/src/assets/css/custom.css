@@ -3867,6 +3867,20 @@ div .rdt_Pagination div:first-of-type svg {
     text-transform: uppercase;
 }
 
+.barcode-main__barcode-item-new-size {
+    margin-top: 15px;
+    margin-left: 5px;
+    margin-bottom: 15px;
+}
+
+.barcode-main__barcode-item-new-size:first-child {
+    margin-top: 0;
+}
+
+.barcode-main__barcode-item-new-size:last-child {
+    margin-bottom: 0;
+}
+
 .barcode-main__barcode-style {
     padding: 0.04in;
     width: 1.799in;
@@ -3915,6 +3929,10 @@ div .rdt_Pagination div:first-of-type svg {
 .print-main__print8 {
     flex: 0 0 auto;
     width: 50%;
+}
+
+.print-main__print9 {
+    width: 90%;
 }
 
 .shortcut-btn {
