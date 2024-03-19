@@ -161,3 +161,19 @@ export const deleteSale = (userId) => async (dispatch) => {
                 );
         });
 };
+
+export const fetchSalesByWarehouse = (id) => async (dispatch) => {
+    await apiConfig
+        .get(`sales?page[size]=0&warehouse_id=${id}`)
+        .then((response) => {
+            dispatch({
+                type: saleActionType.FETCH_SALES_BY_WAREHOUSE,
+                payload: response.data.data,
+            });
+        })
+        .catch(({ response }) => {
+            dispatch(
+                addToast({ text: response.data.message, type: toastType.ERROR })
+            );
+        });
+} 

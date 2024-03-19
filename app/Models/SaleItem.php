@@ -61,6 +61,7 @@ class SaleItem extends BaseModel implements JsonResourceful
 
     protected $fillable = [
         'product_id',
+        'product_cost',
         'product_price',
         'net_unit_price',
         'tax_type',
@@ -110,9 +111,7 @@ class SaleItem extends BaseModel implements JsonResourceful
 
     public function prepareLinks(): array
     {
-        return [
-
-        ];
+        return [];
     }
 
     public function prepareAttributes(): array

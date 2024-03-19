@@ -212,3 +212,20 @@ export const addImportProduct = (importProduct) => async (dispatch) => {
             );
         });
 };
+
+
+export const fetchProductsBySale = (id) => async (dispatch) => {
+    await apiConfig
+        .get(`products?page[size]=0&sale_id=${id}`)
+        .then((response) => {
+            dispatch({
+                type: productActionType.FETCH_PRODUCTS_BY_SALE,
+                payload: response.data.data,
+            });
+        })
+        .catch(({ response }) => {
+            dispatch(
+                addToast({ text: response.data.message, type: toastType.ERROR })
+            );
+        });
+}

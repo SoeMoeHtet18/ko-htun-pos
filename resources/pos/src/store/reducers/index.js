@@ -99,6 +99,9 @@ import posCloseRegisterDetailsReducer from './pos/posCloseRegisterDetailsReducer
 import posRegisterReportDetailsReducer from './pos/posRegisterReportDetailsReducer';
 import conversionReducer from './conversionReducer';
 import conversionDetailsReducer from './conversionDetailsReducer';
+import saleProductReducer from './saleProductReducer';
+import stockExchangeReducer from './stockExchangeReducer';
+import stockExchangeDetailReducer from './stockExchangeDetailReducer';
 
 export default combineReducers( {
     loginUser: loginReducers,
@@ -117,6 +120,7 @@ export default combineReducers( {
     expenseCategories: expenseCategoryReducer,
     expenses: expenseReducer,
     products: productReducers,
+    saleProducts: saleProductReducer,
     sales: saleReducer,
     productSales: productSaleUnitReducers,
     settings: settingReducers,
@@ -200,5 +204,7 @@ export default combineReducers( {
     closeRegisterDetails: posCloseRegisterDetailsReducer,
     registerReportDetails: posRegisterReportDetailsReducer,
     conversions: conversionReducer,
-    conversionDetails: conversionDetailsReducer
+    conversionDetails: conversionDetailsReducer,
+    stockExchanges: stockExchangeReducer,
+    stockExchangeDetail: stockExchangeDetailReducer 
 } );

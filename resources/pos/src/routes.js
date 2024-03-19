@@ -89,6 +89,9 @@ import RegisterReport from "./components/report/registerReport/RegisterReport";
 import Conversions from "./components/conversions/Conversions";
 import CreateConversion from "./components/conversions/CreateConversion";
 import EditConversion from "./components/conversions/EditConversion";
+import StockExchange from "./components/stock-exchanges/StockExchange";
+import CreateStockExchange from "./components/stock-exchanges/CreateStockExchange";
+import EditStockExchange from "./components/stock-exchanges/EditStockExchange";
 
 export const route = [
     {
@@ -386,6 +389,26 @@ export const route = [
         ele: <SaleDetails />,
         permission: Permissions.MANAGE_SALE,
     },
+    {
+        path: "stock-exchanges",
+        ele: <StockExchange />,
+        permission: Permissions.MANAGE_STOCK_EXCHANGE,
+    },
+    {
+        path: "stock-exchanges/create",
+        ele: <CreateStockExchange />,
+        permission: Permissions.MANAGE_STOCK_EXCHANGE,
+    },
+    {
+        path: "stock-exchanges/edit/:id",
+        ele: <EditStockExchange />,
+        permission: Permissions.MANAGE_STOCK_EXCHANGE,
+    },
+    // {
+    //     path: "stock-exchanges/detail/:id",
+    //     ele: <StockExchangeDetail />,
+    //     permission: Permissions.MANAGE_STOCK_EXCHANGE,
+    // },
     {
         path: "purchase-return",
         ele: <PurchaseReturn />,

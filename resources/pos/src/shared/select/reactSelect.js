@@ -9,7 +9,7 @@ const ReactSelect = ( props ) => {
     const dispatch = useDispatch();
     const isOptionDisabled = useSelector( ( state ) => state.isOptionDisabled );
 
-    const option = data ? data?.map( ( da ) => {
+    const option = data && data.length > 0 ? data?.map( ( da ) => {
         return {
             value: da.value ? da.value : da.id,
             label: da.label ? da.label : da.attributes.symbol ? da.attributes.symbol : da.attributes.name

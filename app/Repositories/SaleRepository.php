@@ -90,9 +90,9 @@ class SaleRepository extends BaseRepository
                 ]);
             }
             $sale = $this->storeSaleItems($sale, $input);
-            $reference_code = getSettingValue('sale_code').'_111'.$sale->id;
+            $reference_code = getSettingValue('sale_code') . '_111' . $sale->id;
             $this->generateBarcode($reference_code);
-            $sale['barcode_image_url'] = Storage::url('sales/barcode-'.$reference_code.'.png');
+            $sale['barcode_image_url'] = Storage::url('sales/barcode-' . $reference_code . '.png');
 
             foreach ($input['sale_items'] as $saleItem) {
                 $product = ManageStock::whereWarehouseId($input['warehouse_id'])->whereProductId($saleItem['product_id'])->first();
@@ -137,14 +137,14 @@ class SaleRepository extends BaseRepository
                 getSettingValue('company_name'),
             ];
 
-            if (! empty($mailTemplate) && $mailTemplate->status == MailTemplate::ACTIVE) {
+            if (!empty($mailTemplate) && $mailTemplate->status == MailTemplate::ACTIVE) {
                 $data['data'] = str_replace($search, $replace, $mailTemplate->content);
 
                 Mail::to($customer->email)
                     ->send(new MailSender('emails.mail-sender', $subject, $data));
             }
 
-            if (! empty($smsTemplate) && $smsTemplate->status == SmsTemplate::ACTIVE) {
+            if (!empty($smsTemplate) && $smsTemplate->status == SmsTemplate::ACTIVE) {
                 $message = str_replace($search, $replace, $smsTemplate->content);
 
                 $client = new \GuzzleHttp\Client();
@@ -243,9 +243,10 @@ class SaleRepository extends BaseRepository
         foreach ($input['sale_items'] as $saleItem) {
             $product = Product::whereId($saleItem['product_id'])->first();
 
-            if (! empty($product) && isset($product->quantity_limit) && $saleItem['quantity'] > $product->quantity_limit) {
-                throw new UnprocessableEntityHttpException('Please enter less than '.$product->quantity_limit.' quantity of '.$product->name.' product.');
+            if (!empty($product) && isset($product->quantity_limit) && $saleItem['quantity'] > $product->quantity_limit) {
+                throw new UnprocessableEntityHttpException('Please enter less than ' . $product->quantity_limit . ' quantity of ' . $product->name . ' product.');
             }
+            $saleItem['product_cost'] = $product->product_cost;
             $item = $this->calculationSaleItems($saleItem);
             $saleItem = new SaleItem($item);
             $sale->saleItems()->save($saleItem);
@@ -283,7 +284,7 @@ class SaleRepository extends BaseRepository
             $input['paid_amount'] = 0;
         }
 
-        $input['reference_code'] = getSettingValue('sale_code').'_111'.$sale->id;
+        $input['reference_code'] = getSettingValue('sale_code') . '_111' . $sale->id;
         $sale->update($input);
 
         return $sale;
@@ -302,8 +303,8 @@ class SaleRepository extends BaseRepository
             foreach ($input['sale_items'] as $key => $saleItem) {
                 $product = Product::whereId($saleItem['product_id'])->first();
 
-                if (! empty($product) && isset($product->quantity_limit) && $saleItem['quantity'] > $product->quantity_limit) {
-                    throw new UnprocessableEntityHttpException('Please enter less than '.$product->quantity_limit.' quantity of '.$product->name.' product.');
+                if (!empty($product) && isset($product->quantity_limit) && $saleItem['quantity'] > $product->quantity_limit) {
+                    throw new UnprocessableEntityHttpException('Please enter less than ' . $product->quantity_limit . ' quantity of ' . $product->name . ' product.');
                 }
 
                 //get different ids & update
@@ -336,7 +337,7 @@ class SaleRepository extends BaseRepository
             }
             $removeItemIds = array_diff($saleItemIds, $saleItmOldIds);
             //delete remove product
-            if (! empty(array_values($removeItemIds))) {
+            if (!empty(array_values($removeItemIds))) {
                 foreach ($removeItemIds as $removeItemId) {
                     // remove quantity manage storage
                     $oldProduct = SaleItem::whereId($removeItemId)->first();
@@ -358,7 +359,7 @@ class SaleRepository extends BaseRepository
                 SaleItem::whereIn('id', array_values($removeItemIds))->delete();
             }
             $this->generateBarcode($sale->reference_code);
-            $sale['barcode_image_url'] = Storage::url('sales/barcode-'.$sale->reference_code.'.png');
+            $sale['barcode_image_url'] = Storage::url('sales/barcode-' . $sale->reference_code . '.png');
             $sale = $this->updateSaleCalculation($input, $id);
             DB::commit();
 
@@ -459,8 +460,10 @@ class SaleRepository extends BaseRepository
         $generator = new BarcodeGeneratorPNG();
         $barcodeType = $generator::TYPE_CODE_128;
 
-        Storage::disk(config('app.media_disc'))->put('sales/barcode-'.$code.'.png',
-            $generator->getBarcode(Sale::CODE128, $barcodeType, 4, 70));
+        Storage::disk(config('app.media_disc'))->put(
+            'sales/barcode-' . $code . '.png',
+            $generator->getBarcode(Sale::CODE128, $barcodeType, 4, 70)
+        );
 
         return true;
     }
