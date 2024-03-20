@@ -5,10 +5,14 @@ import ReactDataTable from "../../../shared/table/ReactDataTable";
 import {
     currencySymbolHandling,
     getFormattedMessage,
+    placeholderText,
 } from "../../../shared/sharedMethod";
 import { fetchStockExchanges } from "../../../store/action/stockExchangeAction";
 import { fetchFrontSetting } from "../../../store/action/frontSettingAction";
-import { saleExcelAction } from "../../../store/action/salesExcelAction";
+import { stockExchangeExcelAction } from "../../../store/action/stockExchangeExcelAction";
+import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ProductDetail from "./ProductDetail";
 
 const StockExchangeTab = (props) => {
     const {
@@ -19,7 +23,7 @@ const StockExchangeTab = (props) => {
         frontSetting,
         fetchFrontSetting,
         warehouseValue,
-        saleExcelAction,
+        stockExchangeExcelAction,
         allConfigData,
     } = props;
     const currencySymbol =
@@ -27,6 +31,8 @@ const StockExchangeTab = (props) => {
         frontSetting.value &&
         frontSetting.value.currency_symbol;
     const [isWarehouseValue, setIsWarehouseValue] = useState(false);
+    const [ isDetails, setIsDetails ] = useState( null );
+    const [ lgShow, setLgShow ] = useState( false );
 
     useEffect(() => {
         fetchFrontSetting();
@@ -35,24 +41,25 @@ const StockExchangeTab = (props) => {
     const itemsValue =
         currencySymbol &&
         stockExchanges.length >= 0 &&
-        stockExchanges.map((sale) => ({
-            time: moment(sale.attributes.created_at).format("LT"),
-            reference_code: sale.attributes.reference_code,
-            customer_name: sale.attributes.customer_name,
-            warehouse_name: sale.attributes.warehouse_name,
-            status: sale.attributes.status,
-            payment_status: sale.attributes.payment_status,
-            grand_total: sale.attributes.grand_total,
-            paid_amount: sale.attributes.paid_amount
-                ? sale.attributes.paid_amount
-                : (0.0).toFixed(2),
-            id: sale.id,
+        stockExchanges.map((stockExchange) => ({
+            time: moment(stockExchange.attributes.created_at).format("LT"),
+            reference_code: stockExchange.attributes.reference_code,
+            customer_name: stockExchange.attributes.customer_name,
+            warehouse_name: stockExchange.attributes.warehouse_name,
+            sales_reference_code: stockExchange.attributes.sales_reference_code,
+            payment_status: stockExchange.attributes.payment_status,
+            grand_total: stockExchange.attributes.grand_total,
+            return_in_items_name: stockExchange.attributes.return_in_items_name,
+            return_out_items_name: stockExchange.attributes.return_out_items_name,
+            return_in_items: stockExchange.attributes.return_in_items,
+            return_out_items: stockExchange.attributes.return_out_items,
+            id: stockExchange.id,
             currency: currencySymbol,
         }));
 
     useEffect(() => {
         if (isWarehouseValue === true) {
-            saleExcelAction(warehouseValue.value, setIsWarehouseValue);
+            stockExchangeExcelAction(warehouseValue.value, setIsWarehouseValue);
         }
     }, [isWarehouseValue]);
 
@@ -82,40 +89,50 @@ const StockExchangeTab = (props) => {
             sortable: false,
         },
         {
-            name: getFormattedMessage("purchase.select.status.label"),
-            sortField: "status",
+            name: getFormattedMessage("sales.title"),
+            selector: (row) => row.sales_reference_code,
+            sortField: "sales_reference_code",
+            sortable: false,
+        },
+         {
+            name: getFormattedMessage( 'stock-exchange.table.return-in.label' ),
+            selector: row => row.return_in_items_name,
+            sortField: 'return_in_items',
             sortable: false,
             cell: (row) => {
                 return (
-                    (row.status === 1 && (
-                        <span className="badge bg-light-success">
-                            <span>
-                                {getFormattedMessage(
-                                    "status.filter.received.label"
-                                )}
-                            </span>
-                        </span>
-                    )) ||
-                    (row.status === 2 && (
-                        <span className="badge bg-light-primary">
-                            <span>
-                                {getFormattedMessage(
-                                    "status.filter.pending.label"
-                                )}
-                            </span>
-                        </span>
-                    )) ||
-                    (row.status === 3 && (
-                        <span className="badge bg-light-warning">
-                            <span>
-                                {getFormattedMessage(
-                                    "status.filter.ordered.label"
-                                )}
-                            </span>
-                        </span>
-                    ))
-                );
-            },
+                    <span className="d-flex align-items-center">{row.return_in_items_name}
+                        <button title={placeholderText('globally.view.tooltip.label')}
+                            className='btn text-success px-1 fs-3 border-0'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClickDetailsModel(row.return_in_items)
+                            }}>
+                            <FontAwesomeIcon icon={faEye}/>
+                        </button>
+                    </span>
+                )
+            }
+        },
+        {
+            name: getFormattedMessage( 'stock-exchange.table.return-out.label' ),
+            selector: row => row.return_out_items_name,
+            sortField: 'return_out_items',
+            sortable: false,
+            cell: (row) => {
+                return (
+                    <span className="d-flex align-items-center">{row.return_out_items_name}
+                        <button title={placeholderText('globally.view.tooltip.label')}
+                            className='btn text-success px-1 fs-3 border-0'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClickDetailsModel(row.return_out_items)
+                            }}>
+                            <FontAwesomeIcon icon={faEye}/>
+                        </button>
+                    </span>
+                )
+            }
         },
         {
             name: getFormattedMessage("purchase.grant-total.label"),
@@ -128,25 +145,7 @@ const StockExchangeTab = (props) => {
             sortField: "grand_total",
             sortable: true,
         },
-        {
-            name: getFormattedMessage("dashboard.recentSales.paid.label"),
-            selector: (row) =>
-                currencySymbolHandling(
-                    allConfigData,
-                    row.currency,
-                    row.paid_amount
-                ),
-            sortField: "paid_amount",
-            sortable: true,
-        },
-        {
-            name: getFormattedMessage("dashboard.recentSales.due.label"),
-            selector: (row) =>
-                currencySymbolHandling(allConfigData, row.currency, "0.00"),
-            sortField: "due",
-            // sortable: true,
-        },
-        {
+         {
             name: getFormattedMessage(
                 "dashboard.recentSales.paymentStatus.label"
             ),
@@ -194,8 +193,13 @@ const StockExchangeTab = (props) => {
         setIsWarehouseValue(true);
     };
 
+    const onClickDetailsModel = ( isDetails = null ) => {
+        setLgShow( true );
+        setIsDetails( isDetails );
+    };
+
     return (
-        <div className="warehouse_sale_report_table">
+        <div className="warehouse_stock_exchange_report_table">
             <ReactDataTable
                 columns={columns}
                 items={itemsValue}
@@ -206,9 +210,9 @@ const StockExchangeTab = (props) => {
                 isEXCEL
                 onExcelClick={onExcelClick}
                 isPaymentStatus
-                isStatus
                 isShowFilterField
             />
+             <ProductDetail onDetails={isDetails} setLgShow={setLgShow} lgShow={lgShow} />
         </div>
     );
 };
@@ -221,5 +225,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     fetchFrontSetting,
     fetchStockExchanges,
-    saleExcelAction,
+    stockExchangeExcelAction,
 })(StockExchangeTab);

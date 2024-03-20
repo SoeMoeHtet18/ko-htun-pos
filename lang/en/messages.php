@@ -1,6 +1,6 @@
-<?php return array (
-  'pdf' => 
-  array (
+<?php return array(
+  'pdf' =>
+  array(
     'date' => 'Date',
     'number' => 'Number',
     'payment_status' => 'Payment Status',
@@ -63,9 +63,11 @@
     'current_stock' => 'Current Stock',
     'product_code' => 'Product Code',
     'product_name' => 'Product Name',
+    'return_in' => 'Return In',
+    'return_out' => 'Return Out',
   ),
-  'error' => 
-  array (
+  'error' =>
+  array(
     'product_cant_deleted' => 'Product can\'t be deleted',
     'code_taken' => 'The code has already been taken.',
     'default_warehouse_cant_delete' => 'Default warehouse can\'t be deleted.',
@@ -76,8 +78,8 @@
     'available_quantity' => 'Quantity must be less than Available quantity.',
     'product_category_can_not_delete' => 'Product category can\'t be deleted.',
   ),
-  'success' => 
-  array (
+  'success' =>
+  array(
     'cache_clear_successfully' => 'Cache cleared Successfully',
     'product_category_delete' => 'Product category deleted successfully.',
   ),
@@ -88,4 +90,4 @@
   'Sale_return_pdf' => 'Sale Return PDF',
   'purchase_return_pdf' => 'Purchase Return PDF',
   'quotation_pdf' => 'Quotation PDF',
-)?>
+);
