@@ -132,6 +132,7 @@ const ReactDataTable = (props) => {
     const handleSearch = (searchText) => {
         handlePageChange(1);
         setSearchText(searchText);
+        dispatch({ type: constants.SEARCH_ACTION, payload: searchText});
     };
 
     const onDateSelector = (date) => {

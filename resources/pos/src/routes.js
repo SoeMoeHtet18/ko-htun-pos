@@ -92,6 +92,7 @@ import EditConversion from "./components/conversions/EditConversion";
 import StockExchange from "./components/stock-exchanges/StockExchange";
 import CreateStockExchange from "./components/stock-exchanges/CreateStockExchange";
 import EditStockExchange from "./components/stock-exchanges/EditStockExchange";
+import StockExchangeReport from "./components/report/stockExchangeReport/StockExchangeReport";
 
 export const route = [
     {
@@ -452,6 +453,11 @@ export const route = [
     {
         path: "report/report-top-selling-products",
         ele: <TopSellingProductsReport />,
+        permission: Permissions.MANAGE_REPORTS,
+    },
+    {
+        path: "report/report-stock-exchange",
+        ele: <StockExchangeReport />,
         permission: Permissions.MANAGE_REPORTS,
     },
     {

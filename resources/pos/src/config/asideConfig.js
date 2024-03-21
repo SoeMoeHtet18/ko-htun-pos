@@ -367,6 +367,7 @@ export default [
         customerReportPath: "/app/report/customers",
         customerReportDetailsPath: "/app/report/customers/details",
         registerReportPath: "/app/report/register",
+        stockExchangeReportPath: "/app/report/report-stock-exchange",
         class: "d-flex",
         isSamePrefix: "true",
         permission: Permissions.MANAGE_REPORTS,
@@ -406,6 +407,10 @@ export default [
             {
                 title: getFormattedMessage("top-selling-product.reports.title"),
                 to: "/app/report/report-top-selling-products",
+            },
+            {
+                title: getFormattedMessage("stock-exchange.reports.title"),
+                to: "/app/report/report-stock-exchange",
             },
             {
                 title: getFormattedMessage(

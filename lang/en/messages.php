@@ -65,6 +65,13 @@
     'product_name' => 'Product Name',
     'return_in' => 'Return In',
     'return_out' => 'Return Out',
+    'return_in_item' => 'Return In Product',
+    'return_out_item' => 'Return Out Product',
+    'return_in_cost' => 'Return In Cost',
+    'return_out_cost' => 'Return Out Cost',
+    'return_in_price' => 'Return In Price',
+    'return_out_price' => 'Return Out Price',
+    'profit' => 'Profit'
   ),
   'error' =>
   array(

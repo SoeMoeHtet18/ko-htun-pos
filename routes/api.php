@@ -294,10 +294,6 @@ Route::middleware('auth:sanctum')->group(function () {
         'expense-report-excel',
         [ReportAPIController::class, 'getWarehouseExpenseReportExcel']
     )->name('report-getExpenseReportExcel');
-    Route::get(
-        'stock-exchange-report-excel',
-        [ReportAPIController::class, 'getWarehouseStockExchangeReportExcel']
-    )->name('report-getStockExchangeReportExcel');
 
     //sale report
     Route::get(
@@ -319,6 +315,15 @@ Route::middleware('auth:sanctum')->group(function () {
         'top-selling-product-report',
         [ReportAPIController::class, 'getSellingProductReport']
     );
+
+    // stock-exchange-report
+    Route::get(
+        'stock-exchange-report-excel',
+        [ReportAPIController::class, 'getWarehouseStockExchangeReportExcel']
+    )->name('report-getStockExchangeReportExcel');
+    Route::get('total-stock-exchange-report-excel', [
+        ReportAPIController::class, 'getStockExchangeReportExcel'
+    ])->name('report-stockExchangeReportExcel');
 
     Route::get('supplier-report', [ReportAPIController::class, 'getSupplierReport']);
 

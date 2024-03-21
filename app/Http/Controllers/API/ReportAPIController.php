@@ -13,6 +13,7 @@ use App\Exports\PurchasesWarehouseReportExport;
 use App\Exports\SaleReportExport;
 use App\Exports\SaleReturnWarehouseReportExport;
 use App\Exports\SalesWarehouseReportExport;
+use App\Exports\StockExchangeReportExport;
 use App\Exports\StockExchangeWarehouseReportExport;
 use App\Exports\StockReportExport;
 use App\Exports\TopSellingProductReportExport;
@@ -181,6 +182,18 @@ class ReportAPIController extends AppBaseController
         $data['top_selling_product_excel_url'] = Storage::url('excel/top-selling-product-report-excel.xlsx');
 
         return $this->sendResponse($data, 'Top selling product Report retrieved successfully');
+    }
+
+    public function getStockExchangeReportExcel(Request $request): JsonResponse
+    {
+        if (Storage::exists('excel/total-stock-exchange-report-excel.xlsx')) {
+            Storage::delete('excel/total-stock-exchange-report-excel.xlsx');
+        }
+        Excel::store(new StockExchangeReportExport, 'excel/total-stock-exchange-report-excel.xlsx');
+
+        $data['total_stock_exchange_excel_url'] = Storage::url('excel/total-stock-exchange-report-excel.xlsx');
+
+        return $this->sendResponse($data, 'Stock Exchange Report retrieved successfully');
     }
 
     /**

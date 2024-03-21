@@ -515,6 +515,7 @@ export const constants = {
     CALL_UPDATE_BRAND_API: "CALL_UPDATE_BRAND_API",
     SET_SAVING: "SET_SAVING",
     SET_DEFAULT_COUNTRY: "SET_DEFAULT_COUNTRY",
+    SEARCH_ACTION: "SEARCH_ACTION"
 };
 
 export const dateLabelSelector = {

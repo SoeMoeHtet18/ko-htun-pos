@@ -21,6 +21,7 @@
                 <th style="width: 200%;">{{ __('messages.pdf.client') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.return_in') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.return_out') }}</th>
+                <th style="width: 200%;">{{ __('messages.pdf.sub_total') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.total') }}</th>
                 <th style="width: 300%;">{{ __('messages.pdf.payment_status') }}</th>
             </tr>
@@ -33,28 +34,25 @@
                 <td>{{$stockExchange->sales->reference_code}}</td>
                 <td>{{$stockExchange->sales->customer->name}}</td>
                 <td>
-                    @foreach($stockExchange->returnInItems as $index => $item)
-                    {{$item->product->name}}
-                    @if(!$loop->last || $loop->count > 1)
-                    @if(!$loop->last)
-                    {{$item->product->name}},
-                    @else
-                    {{$item->product->name}}
-                    @endif
-                    @endif
-                    @endforeach
+                    @php
+                    $return_in_price = 0;
+                    foreach($stockExchange->returnInItems as $item) {
+                    $return_in_price += $item->product_price ?? 0;
+                    }
+                    @endphp
+                    {{ $return_in_price }}
                 </td>
                 <td>
-                    @foreach($stockExchange->returnOutItems as $index => $item)
-                    {{$item->product->name}}
-                    @if(!$loop->last || $loop->count > 1)
-                    @if(!$loop->last)
-                    {{$item->product->name}},
-                    @else
-                    {{$item->product->name}}
-                    @endif
-                    @endif
-                    @endforeach
+                    @php
+                    $return_out_price = 0;
+                    foreach($stockExchange->returnOutItems as $item) {
+                    $return_out_price += $item->product_price ?? 0;
+                    }
+                    @endphp
+                    {{ $return_out_price }}
+                </td>
+                <td>
+                    {{ $return_out_price - $return_in_price}}
                 </td>
                 <td style="float: left">{{number_format($stockExchange->grand_total, 2)}}</td>
                 @if($stockExchange->payment_status == \App\Models\StockExchange::PAID)

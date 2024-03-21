@@ -102,6 +102,7 @@ import conversionDetailsReducer from './conversionDetailsReducer';
 import saleProductReducer from './saleProductReducer';
 import stockExchangeReducer from './stockExchangeReducer';
 import stockExchangeDetailReducer from './stockExchangeDetailReducer';
+import searchReducer from './searchReducer';
 
 export default combineReducers( {
     loginUser: loginReducers,
@@ -206,5 +207,6 @@ export default combineReducers( {
     conversions: conversionReducer,
     conversionDetails: conversionDetailsReducer,
     stockExchanges: stockExchangeReducer,
-    stockExchangeDetail: stockExchangeDetailReducer 
+    stockExchangeDetail: stockExchangeDetailReducer,
+    search: searchReducer,
 } );

@@ -12,7 +12,8 @@ import { fetchFrontSetting } from "../../../store/action/frontSettingAction";
 import { stockExchangeExcelAction } from "../../../store/action/stockExchangeExcelAction";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ProductDetail from "./ProductDetail";
+import ProductDetail from "../ProductDetail";
+import PaymentDetail from "../PaymentDetail";
 
 const StockExchangeTab = (props) => {
     const {
@@ -25,6 +26,7 @@ const StockExchangeTab = (props) => {
         warehouseValue,
         stockExchangeExcelAction,
         allConfigData,
+        search,
     } = props;
     const currencySymbol =
         frontSetting &&
@@ -33,6 +35,8 @@ const StockExchangeTab = (props) => {
     const [isWarehouseValue, setIsWarehouseValue] = useState(false);
     const [ isDetails, setIsDetails ] = useState( null );
     const [ lgShow, setLgShow ] = useState( false );
+    const [ paymentDetailData, setPaymentDetailData] = useState(null);
+    const [ paymentDetailShow, setPaymentDetailShow ] = useState(false);
 
     useEffect(() => {
         fetchFrontSetting();
@@ -48,18 +52,24 @@ const StockExchangeTab = (props) => {
             warehouse_name: stockExchange.attributes.warehouse_name,
             sales_reference_code: stockExchange.attributes.sales_reference_code,
             payment_status: stockExchange.attributes.payment_status,
+            sub_total: stockExchange.attributes.return_out_items.reduce((accumulator, currentItem) => accumulator + currentItem.product_price, 0) -
+                stockExchange.attributes.return_in_items.reduce((accumulator, currentItem) => accumulator + currentItem.product_price, 0),
             grand_total: stockExchange.attributes.grand_total,
             return_in_items_name: stockExchange.attributes.return_in_items_name,
             return_out_items_name: stockExchange.attributes.return_out_items_name,
             return_in_items: stockExchange.attributes.return_in_items,
             return_out_items: stockExchange.attributes.return_out_items,
+            tax_amount: stockExchange.attributes.tax_amount,
+            tax_rate: stockExchange.attributes.tax_rate,
+            discount: stockExchange.attributes.discount,
+            shipping: stockExchange.attributes.shipping,
             id: stockExchange.id,
             currency: currencySymbol,
         }));
 
     useEffect(() => {
         if (isWarehouseValue === true) {
-            stockExchangeExcelAction(warehouseValue.value, setIsWarehouseValue);
+            stockExchangeExcelAction(warehouseValue.value, setIsWarehouseValue, {search: search});
         }
     }, [isWarehouseValue]);
 
@@ -94,14 +104,14 @@ const StockExchangeTab = (props) => {
             sortField: "sales_reference_code",
             sortable: false,
         },
-         {
-            name: getFormattedMessage( 'stock-exchange.table.return-in.label' ),
-            selector: row => row.return_in_items_name,
+        {
+            name: getFormattedMessage( "stock-exchange.return-in-price.label" ),
+            selector: row => row.return_in_items,
             sortField: 'return_in_items',
             sortable: false,
             cell: (row) => {
                 return (
-                    <span className="d-flex align-items-center">{row.return_in_items_name}
+                    <span className="d-flex align-items-center">{row.return_in_items.reduce((accumulator, currentItem) => accumulator + currentItem.product_price, 0)}
                         <button title={placeholderText('globally.view.tooltip.label')}
                             className='btn text-success px-1 fs-3 border-0'
                             onClick={(e) => {
@@ -115,13 +125,13 @@ const StockExchangeTab = (props) => {
             }
         },
         {
-            name: getFormattedMessage( 'stock-exchange.table.return-out.label' ),
+            name: getFormattedMessage( "stock-exchange.return-out-price.label" ),
             selector: row => row.return_out_items_name,
             sortField: 'return_out_items',
             sortable: false,
             cell: (row) => {
                 return (
-                    <span className="d-flex align-items-center">{row.return_out_items_name}
+                    <span className="d-flex align-items-center">{row.return_out_items.reduce((accumulator, currentItem) => accumulator + currentItem.product_price, 0)}
                         <button title={placeholderText('globally.view.tooltip.label')}
                             className='btn text-success px-1 fs-3 border-0'
                             onClick={(e) => {
@@ -135,6 +145,17 @@ const StockExchangeTab = (props) => {
             }
         },
         {
+            name: getFormattedMessage( "pos-sub-total.title" ),
+             selector: (row) =>
+                currencySymbolHandling(
+                    allConfigData,
+                    row.currency,
+                    row.sub_total,
+                ),
+            sortField: 'sub_total',
+            sortable: false,
+        },
+        {
             name: getFormattedMessage("purchase.grant-total.label"),
             selector: (row) =>
                 currencySymbolHandling(
@@ -144,8 +165,23 @@ const StockExchangeTab = (props) => {
                 ),
             sortField: "grand_total",
             sortable: true,
+            cell: (row) => {
+                return (
+                    <span  className="d-flex align-items-center">
+                        {row.grand_total}
+                        <button title={placeholderText('globally.view.tooltip.label')}
+                            className='btn text-success px-1 fs-3 border-0'
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onClickPaymentModel(row);
+                            }}>
+                            <FontAwesomeIcon icon={faEye}/>
+                        </button>    
+                    </span>
+                )
+            }
         },
-         {
+        {
             name: getFormattedMessage(
                 "dashboard.recentSales.paymentStatus.label"
             ),
@@ -194,9 +230,22 @@ const StockExchangeTab = (props) => {
     };
 
     const onClickDetailsModel = ( isDetails = null ) => {
-        setLgShow( true );
+        setPaymentDetailShow( true );
         setIsDetails( isDetails );
     };
+
+    const onClickPaymentModel = (stockExchangeData = null) => {
+        let paymentDetail = {
+            sub_total: stockExchangeData.sub_total,
+            tax_amount: stockExchangeData.tax_amount,
+            tax_rate: stockExchangeData.tax_rate,
+            discount: stockExchangeData.discount,
+            shipping: stockExchangeData.shipping,
+            grand_total: stockExchangeData.grand_total
+        };
+        setPaymentDetailShow(true);
+        setPaymentDetailData(paymentDetail);
+    }
 
     return (
         <div className="warehouse_stock_exchange_report_table">
@@ -212,14 +261,16 @@ const StockExchangeTab = (props) => {
                 isPaymentStatus
                 isShowFilterField
             />
-             <ProductDetail onDetails={isDetails} setLgShow={setLgShow} lgShow={lgShow} />
+            <ProductDetail onDetails={isDetails} setLgShow={setLgShow} lgShow={lgShow} />
+            <PaymentDetail paymentData={paymentDetailData} lgShow={paymentDetailShow} setLgShow={setPaymentDetailShow}
+                allConfigData={allConfigData} frontSetting={frontSetting} />
         </div>
     );
 };
 
 const mapStateToProps = (state) => {
-    const { isLoading, totalRecord, stockExchanges, frontSetting } = state;
-    return { isLoading, totalRecord, stockExchanges, frontSetting };
+    const { isLoading, totalRecord, stockExchanges, frontSetting, search } = state;
+    return { isLoading, totalRecord, stockExchanges, frontSetting, search };
 };
 
 export default connect(mapStateToProps, {

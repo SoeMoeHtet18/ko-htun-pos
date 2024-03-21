@@ -500,8 +500,8 @@
     "stock-exchange.select.return-in.label": "Choose Return In Product",
     "stock-exchange.select.return-out.label": "Choose Return Out Product",
     "stock-exchange.input.sales.validate.label":"Please select sales",
-    "stock-exchange.stock-in-price.label": "Stock In Price",
-    "stock-exchange.stock-out-price.label": "Stock Out Price",
+    "stock-exchange.return-in-price.label": "Return In Price",
+    "stock-exchange.return-out-price.label": "Return Out Price",
     "date-picker.filter.today.label": "Today",
     "date-picker.filter.this-week.label": "This Week",
     "date-picker.filter.last-week.label": "Last Week",
@@ -520,6 +520,7 @@
     "stock.reports.title": "Stock Reports",
     "purchase.reports.title": "Purchase Reports",
     "top-selling-product.reports.title": "Top Selling Products Reports",
+    "stock-exchange.reports.title": "Stock Exchange Reports",
     "globally.react-table.column.code.label": "Code",
     "print.barcode.title": "Print Barcode",
     "paper.size.title": "Paper Size",
@@ -814,5 +815,6 @@
     "pdf.btn.label": "PDF",
     "select.report.label": "Select User",
     "suppliers.import.title": "Import Suppliers",
-    "customers.import.title": "Import Customers"
+    "customers.import.title": "Import Customers",
+    "payment.detail.title": "Payment Detail"
 }

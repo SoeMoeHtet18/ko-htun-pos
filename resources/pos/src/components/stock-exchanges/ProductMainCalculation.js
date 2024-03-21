@@ -88,7 +88,7 @@ const ProductMainCalculation = (props) => {
                                 <tr>
                                     <td className="py-3">
                                         {getFormattedMessage(
-                                            "stock-exchange.stock-in-price.label"
+                                            "stock-exchange.return-in-price.label"
                                         )}
                                     </td>
                                     <td className="py-3 text-primary">
@@ -104,7 +104,7 @@ const ProductMainCalculation = (props) => {
                                 <tr>
                                     <td className="py-3">
                                         {getFormattedMessage(
-                                            "stock-exchange.stock-out-price.label"
+                                            "stock-exchange.return-out-price.label"
                                         )}
                                     </td>
                                     <td className="py-3 text-primary">

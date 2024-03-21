@@ -154,6 +154,7 @@ const AsideTopSubMenuItem = (props) => {
                                     className={`${
                                         location.pathname === mainItems.to ||
                                         location.pathname === mainItems.path ||
+                                        location.pathname === mainItems.stockExchangeReportPath ||
                                         location.pathname ===
                                             mainItems.stockPath ||
                                         location.pathname ===

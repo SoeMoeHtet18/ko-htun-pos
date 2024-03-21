@@ -7,7 +7,7 @@ export const stockExchangeExcelAction = (warehouse, setIsWarehouseValue, filter 
     if (isLoading) {
         dispatch(setLoading(true))
     }
-    await apiConfig.get(`stock-exchange-report-excel?warehouse_id=${warehouse}`)
+    await apiConfig.get(`stock-exchange-report-excel?warehouse_id=${warehouse}&search=${filter.search}`)
         .then((response) => {
             window.open(response.data.data.stock_exchange_excel_url, '_blank');
             setIsWarehouseValue(false);
