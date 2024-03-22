@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Exports\ExpenseWarehouseReportExport;
+use App\Exports\GrossProfitReportExport;
 use App\Exports\ProductPurchaseReportExport;
 use App\Exports\ProductPurchaseReturnReportExport;
 use App\Exports\ProductSaleReportExport;
@@ -637,18 +638,34 @@ class ReportAPIController extends AppBaseController
         $returnInItems = StockExchangeReturnInItem::whereIn('stock_exchange_id', $stockExchangesIds);
         $returnOutItems = StockExchangeReturnOutItem::whereIn('stock_exchange_id', $stockExchangesIds);
 
+        // cost & price
         $returnInCost = $returnInItems->sum('product_cost');
         $returnOutCost = $returnOutItems->sum('product_cost');
         $returnInPrice = $returnInItems->sum('product_price');
         $returnOutPrice = $returnOutItems->sum('product_price');
+
+        // discount & tax
         $stockExchangeDiscount = $stockExchanges->sum('discount');
-        // $stockExchangeTax = $stockExchanges->sum('tax_amount');
-        // $data['stock_exchange_profit'] = (($returnOutPrice + $stockExchangeTax) - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
-        $data['stock_exchange_profit'] = ($returnOutPrice - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+        $stockExchangeTax = $stockExchanges->sum('tax_amount');
+
+        $data['stock_exchange_profit'] = (($returnOutPrice + $stockExchangeTax) - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+        // $data['stock_exchange_profit'] = ($returnOutPrice - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
 
         $data['gross_profit'] = ($data['sales'] + $data['stock_exchange_profit']) - $data['product_cost'] - $data['sale_returns'];
 
         return $this->sendResponse($data, 'Profit loss report info retrieved successfully');
+    }
+
+    public function getGrossProfitReportExcel()
+    {
+        if (Storage::exists('excel/gross-profit-excel.xlsx')) {
+            Storage::delete('excel/gross-profit-excel.xlsx');
+        }
+        Excel::store(new GrossProfitReportExport, 'excel/gross-profit-excel.xlsx');
+
+        $data['gross_profit_report_excel_url'] = Storage::url('excel/gross-profit-excel.xlsx');
+
+        return $this->sendResponse($data, 'Gross Profit retrieved successfully');
     }
 
     public function getCustomerReport(Request $request)

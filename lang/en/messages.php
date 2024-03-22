@@ -71,7 +71,10 @@
     'return_out_cost' => 'Return Out Cost',
     'return_in_price' => 'Return In Price',
     'return_out_price' => 'Return Out Price',
-    'profit' => 'Profit'
+    'profit' => 'Profit',
+    'qty' => 'Qty',
+    'loss' => 'Loss',
+    'type' => 'Type'
   ),
   'error' =>
   array(

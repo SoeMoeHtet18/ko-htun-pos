@@ -337,6 +337,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // profit loss report
     Route::get('profit-loss-report', [ReportAPIController::class, 'getProfitLossReport']);
 
+    // gross profit report
+    Route::get('gross-profit-report-excel', [ReportAPIController::class, 'getGrossProfitReportExcel'])
+        ->name('getGrossProfitReportExcel');
+
     // best customers report
 
     Route::get('best-customers-report', [ReportAPIController::class, 'getBestCustomersReport']);

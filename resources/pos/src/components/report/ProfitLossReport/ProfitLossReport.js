@@ -28,6 +28,8 @@ import { dateFormat } from "../../../constants";
 import moment from "moment";
 import { fetchProfitAndLossReports } from "../../../store/action/profitAndLossReportAction";
 import { fetchFrontSetting } from "../../../store/action/frontSettingAction";
+import { Button } from "react-bootstrap-v5";
+import { grossProfitExcelAction } from "../../../store/action/grossProfitExcelAction";
 
 const ProfitLossReport = (props) => {
     const {
@@ -35,12 +37,14 @@ const ProfitLossReport = (props) => {
         frontSetting,
         fetchProfitAndLossReports,
         profitAndLossReport,
+        grossProfitExcelAction,
         allConfigData,
     } = props;
     const [selectDate, setSelectDate] = useState();
     const [created_at] = useState(Filters.OBJ.created_at);
     const startMonth = moment().startOf("month").format(dateFormat.NATIVE);
     const today = moment().format(dateFormat.NATIVE);
+    const [downloadExcel, setDownloadExcel] = useState(false);
 
     useEffect(() => {
         fetchFrontSetting();
@@ -49,6 +53,12 @@ const ProfitLossReport = (props) => {
     useEffect(() => {
         onChangeDidMount();
     }, [selectDate]);
+
+    useEffect(() => {
+        if(downloadExcel) {
+            grossProfitExcelAction(selectDate, setDownloadExcel);
+        }
+    }, [downloadExcel]);
 
     const onChange = (filter) => {
         fetchProfitAndLossReports(filter, true);
@@ -68,17 +78,34 @@ const ProfitLossReport = (props) => {
         onChange(filters);
     };
 
+    const onExcelClick = () => {
+        setDownloadExcel(true);
+    };
+
     return (
         <MasterLayout>
             <TopProgressBar />
             <TabTitle title={placeholderText("profit-loss.reports.title")} />
-            <div className={"d-flex justify-content-center"}>
-                <DateRangePicker
-                    onDateSelector={onDateSelector}
-                    isProfitReport={true}
-                    selectDate={selectDate}
-                />
+             <div className="d-flex justify-content-center">
+                    <DateRangePicker
+                        onDateSelector={onDateSelector}
+                        isProfitReport={true}
+                        selectDate={selectDate}
+                    />
+                </div>
+            <div className="d-flex justify-content-end">
+                <div>
+                    <Button
+                        type="button"
+                        variant="primary"
+                        onClick={() => onExcelClick()}
+                        className="btn-light-primary"
+                    >
+                        {getFormattedMessage("excel.btn.label")}
+                    </Button>
+                </div>
             </div>
+
             <Row className="g-4">
                 <Col className="col-12 mb-4">
                     <Row className={"align-items-start"}>
@@ -438,4 +465,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     fetchProfitAndLossReports,
     fetchFrontSetting,
+    grossProfitExcelAction,
 })(ProfitLossReport);
