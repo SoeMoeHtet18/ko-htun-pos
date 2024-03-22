@@ -31,6 +31,9 @@ use App\Models\Sale;
 use App\Models\SaleReturn;
 use App\Models\SaleReturnItem;
 use App\Models\SalesPayment;
+use App\Models\StockExchange;
+use App\Models\StockExchangeReturnInItem;
+use App\Models\StockExchangeReturnOutItem;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Repositories\CustomerRepository;
@@ -580,12 +583,22 @@ class ReportAPIController extends AppBaseController
             'date',
             [$request->get('start_date'), $request->get('end_date')]
         )->sum('amount');
+        $data['stock_exchanges'] = StockExchange::whereBetween(
+            'date',
+            [$request->get('start_date'), $request->get('end_date')]
+        )->sum('grand_total');
+
         $data['sales_payment_amount'] = SalesPayment::whereBetween(
             'payment_date',
             [$request->get('start_date'), $request->get('end_date')]
         )->sum('amount');
-        $data['Revenue'] = $data['sales'] - $data['sale_returns'];
-        $data['payments_received'] = $data['sales_payment_amount'] + $data['purchase_returns'];
+        $data['stock_exchanges_paid_amount'] = StockExchange::where('payment_status', 1)
+            ->whereBetween(
+                'date',
+                [$request->get('start_date'), $request->get('end_date')]
+            )->sum('grand_total');
+        $data['Revenue'] = ($data['sales'] + $data['stock_exchanges']) - $data['sale_returns'];
+        $data['payments_received'] = $data['sales_payment_amount'] + $data['stock_exchanges_paid_amount'] + $data['purchase_returns'];
 
         $productCost = 0;
         $productItemCost = 0;
@@ -615,7 +628,25 @@ class ReportAPIController extends AppBaseController
 
         $data['product_cost'] = $productCost - $productItemCost;
 
-        $data['gross_profit'] = $data['sales'] - $data['product_cost'] - $data['sale_returns'];
+        $stockExchangesIds = StockExchange::whereBetween(
+            'date',
+            [$request->get('start_date'), $request->get('end_date')]
+        )->pluck('id')->toArray();
+        $stockExchanges = StockExchange::whereIn('id', $stockExchangesIds);
+
+        $returnInItems = StockExchangeReturnInItem::whereIn('stock_exchange_id', $stockExchangesIds);
+        $returnOutItems = StockExchangeReturnOutItem::whereIn('stock_exchange_id', $stockExchangesIds);
+
+        $returnInCost = $returnInItems->sum('product_cost');
+        $returnOutCost = $returnOutItems->sum('product_cost');
+        $returnInPrice = $returnInItems->sum('product_price');
+        $returnOutPrice = $returnOutItems->sum('product_price');
+        $stockExchangeDiscount = $stockExchanges->sum('discount');
+        // $stockExchangeTax = $stockExchanges->sum('tax_amount');
+        // $data['stock_exchange_profit'] = (($returnOutPrice + $stockExchangeTax) - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+        $data['stock_exchange_profit'] = ($returnOutPrice - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+
+        $data['gross_profit'] = ($data['sales'] + $data['stock_exchange_profit']) - $data['product_cost'] - $data['sale_returns'];
 
         return $this->sendResponse($data, 'Profit loss report info retrieved successfully');
     }

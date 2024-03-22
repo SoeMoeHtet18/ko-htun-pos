@@ -498,6 +498,8 @@
     "stock-exchange.input.sales.validate.label":"Please select sales",
     "stock-exchange.return-in-price.label": "Return In Price",
     "stock-exchange.return-out-price.label": "Return Out Price",
+    "stock-exchange.profit.label": "Stock Exchange Profit",
+    "stock-exchange.profit.label": "Stock Exchange Profit",
     "date-picker.filter.today.label": "Bugün",
     "date-picker.filter.this-week.label": "Bu hafta",
     "date-picker.filter.last-week.label": "Geçen hafta",

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import MasterLayout from "../../MasterLayout";
 import TabTitle from "../../../shared/tab-title/TabTitle";
 import {
@@ -17,6 +17,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { totalStockExchangeReportExcelAction } from "../../../store/action/totalStockExchangeReportExcelAction";
 import PaymentDetail from "../PaymentDetail";
+import { constants } from "../../../constants";
 
 const StockExchangeReport = (props) => {
     const {
@@ -36,6 +37,8 @@ const StockExchangeReport = (props) => {
     const [ lgShow, setLgShow ] = useState( false );
     const [ paymentDetailData, setPaymentDetailData] = useState(null);
     const [ paymentDetailShow, setPaymentDetailShow ] = useState(false);
+    const [ pageRendered, setPageRendered ] = useState(false);
+    const dispatch = useDispatch();
 
     const currencySymbol =
         frontSetting &&
@@ -71,9 +74,16 @@ const StockExchangeReport = (props) => {
             currency: currencySymbol,
         }));
 
+    useState(() => {
+        if(!pageRendered) {
+            dispatch({ type: constants.SEARCH_ACTION, payload: ''});
+        }
+        setPageRendered(true);
+    }, []);
+
     useEffect(() => {
         if (isWarehouseValue === true) {
-            totalStockExchangeReportExcelAction(dates, setIsWarehouseValue, {search: search});
+            totalStockExchangeReportExcelAction(dates, setIsWarehouseValue, {search: search.length > 0 ? search : ''});
         }
     }, [isWarehouseValue]);
 

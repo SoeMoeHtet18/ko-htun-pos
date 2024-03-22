@@ -70,7 +70,7 @@ const ProductSearch = (props) => {
                     setUpdateProducts([...updateProducts, newProduct]);
                 }
             }
-            removeSearchClass();
+            // removeSearchClass();
             setSearchString("");
         }
     }

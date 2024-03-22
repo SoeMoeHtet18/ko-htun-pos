@@ -500,6 +500,8 @@
     "stock-exchange.input.sales.validate.label":"Please select sales",
     "stock-exchange.return-in-price.label": "Return In Price",
     "stock-exchange.return-out-price.label": "Return Out Price",
+    "stock-exchange.profit.label": "Stock Exchange Profit",
+    "stock-exchange.profit.label": "Stock Exchange Profit",
     "date-picker.filter.today.label": "今天",
     "date-picker.filter.this-week.label": "本周",
     "date-picker.filter.last-week.label": "上周",

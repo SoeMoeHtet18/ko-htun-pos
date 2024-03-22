@@ -3982,6 +3982,11 @@ div .rdt_Pagination div:first-of-type svg {
     background-color: #f4a9cb !important;
 }
 
+.widget-bg-yellow {
+    background-color: #dde502;
+    opacity: 1;
+}
+
 .widget-bg-blue {
     background-color: #00c6ff;
     opacity: 1;

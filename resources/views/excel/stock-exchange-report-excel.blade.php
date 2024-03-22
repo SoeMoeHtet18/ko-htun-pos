@@ -22,6 +22,9 @@
                 <th style="width: 200%;">{{ __('messages.pdf.return_in') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.return_out') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.sub_total') }}</th>
+                <th style="width: 200%;">{{ __('messages.pdf.discount') }}</th>
+                <th style="width: 200%;">{{ __('messages.pdf.order_tax') }}</th>
+                <th style="width: 200%;">{{ __('messages.pdf.shipping') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.total') }}</th>
                 <th style="width: 300%;">{{ __('messages.pdf.payment_status') }}</th>
             </tr>
@@ -53,6 +56,15 @@
                 </td>
                 <td>
                     {{ $return_out_price - $return_in_price}}
+                </td>
+                <td>
+                    {{ $stockExchange->discount }}
+                </td>
+                <td style="float: right;">
+                    {{ $stockExchange->tax_amount }} ({{$stockExchange->tax_rate}}%)
+                </td>
+                <td>
+                    {{ $stockExchange->shipping }}
                 </td>
                 <td style="float: left">{{number_format($stockExchange->grand_total, 2)}}</td>
                 @if($stockExchange->payment_status == \App\Models\StockExchange::PAID)

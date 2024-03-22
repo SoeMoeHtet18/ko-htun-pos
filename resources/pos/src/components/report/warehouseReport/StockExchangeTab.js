@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import ReactDataTable from "../../../shared/table/ReactDataTable";
 import {
     currencySymbolHandling,
@@ -14,6 +14,7 @@ import { faEye } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ProductDetail from "../ProductDetail";
 import PaymentDetail from "../PaymentDetail";
+import { constants } from "../../../constants";
 
 const StockExchangeTab = (props) => {
     const {
@@ -37,6 +38,8 @@ const StockExchangeTab = (props) => {
     const [ lgShow, setLgShow ] = useState( false );
     const [ paymentDetailData, setPaymentDetailData] = useState(null);
     const [ paymentDetailShow, setPaymentDetailShow ] = useState(false);
+    const [ pageRendered, setPageRendered ] = useState(false);
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchFrontSetting();
@@ -67,9 +70,16 @@ const StockExchangeTab = (props) => {
             currency: currencySymbol,
         }));
 
+    useState(() => {
+        if(!pageRendered) {
+            dispatch({ type: constants.SEARCH_ACTION, payload: ''});
+        }
+        setPageRendered(true);
+    }, []);
+
     useEffect(() => {
         if (isWarehouseValue === true) {
-            stockExchangeExcelAction(warehouseValue.value, setIsWarehouseValue, {search: search});
+            stockExchangeExcelAction(warehouseValue.value, setIsWarehouseValue, {search: search.length > 0 ? search : ''});
         }
     }, [isWarehouseValue]);
 
@@ -230,7 +240,7 @@ const StockExchangeTab = (props) => {
     };
 
     const onClickDetailsModel = ( isDetails = null ) => {
-        setPaymentDetailShow( true );
+        setLgShow( true );
         setIsDetails( isDetails );
     };
 

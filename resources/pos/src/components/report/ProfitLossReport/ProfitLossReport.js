@@ -20,6 +20,7 @@ import {
     faSquareMinus,
     faMoneyBillTrendUp,
     faMoneyBillTransfer,
+    faRotate,
 } from "@fortawesome/free-solid-svg-icons";
 import DateRangePicker from "../../../shared/datepicker/DateRangePicker";
 import { Filters } from "../../../constants";
@@ -204,6 +205,29 @@ const ProfitLossReport = (props) => {
                         />
 
                         <ProfitLossWidget
+                            className={"widget-bg-yellow"}
+                            currency={
+                                frontSetting.value &&
+                                frontSetting.value.currency_symbol
+                            }
+                            icon={
+                                <FontAwesomeIcon
+                                    icon={faRotate}
+                                    className="fs-1-xl text-white"
+                                />
+                            }
+                            title={getFormattedMessage("stock-exchange.title")}
+                            allConfigData={allConfigData}
+                            value={
+                                profitAndLossReport.stock_exchanges
+                                    ? parseFloat(
+                                          profitAndLossReport.stock_exchanges
+                                      ).toFixed(2)
+                                    : "0.00"
+                            }
+                        />
+
+                        <ProfitLossWidget
                             className={"widget-bg-pink"}
                             currency={
                                 frontSetting.value &&
@@ -227,7 +251,16 @@ const ProfitLossReport = (props) => {
                                                 ? profitAndLossReport.sales
                                                 : "0.00"
                                         )}
-                                        ${placeholderText("sales.title")}) - (
+                                        ${placeholderText("sales.title")} ) + ( ${currencySymbolHandling(
+                                            allConfigData,
+                                            frontSetting.value &&
+                                                frontSetting.value
+                                                    .currency_symbol,
+                                            profitAndLossReport.stock_exchanges
+                                                ? profitAndLossReport.stock_exchanges
+                                                : "0.00"
+                                        )}
+                                        ${placeholderText("stock-exchange.title")} ) - (
                                         ${currencySymbolHandling(
                                             allConfigData,
                                             frontSetting.value &&
@@ -239,7 +272,7 @@ const ProfitLossReport = (props) => {
                                         )}
                                         ${placeholderText(
                                             "sales-return.title"
-                                        )})`}
+                                        )} )`}
                             value={
                                 profitAndLossReport.Revenue
                                     ? parseFloat(
@@ -277,6 +310,18 @@ const ProfitLossReport = (props) => {
                                             )}
                                             ${placeholderText(
                                                 "sales.title"
+                                            )})  + (
+                                            ${currencySymbolHandling(
+                                                allConfigData,
+                                                frontSetting.value &&
+                                                    frontSetting.value
+                                                        .currency_symbol,
+                                                profitAndLossReport.stock_exchange_profit
+                                                    ? profitAndLossReport.stock_exchange_profit
+                                                    : "0.00"
+                                            )}
+                                            ${placeholderText(
+                                                "stock-exchange.profit.label"
                                             )})  - (
                                                 ${currencySymbolHandling(
                                                     allConfigData,
@@ -339,6 +384,18 @@ const ProfitLossReport = (props) => {
                                             )}
                                             ${placeholderText(
                                                 "global.payment-received.title"
+                                            )}) + (
+                                            ${currencySymbolHandling(
+                                                allConfigData,
+                                                frontSetting.value &&
+                                                    frontSetting.value
+                                                        .currency_symbol,
+                                                profitAndLossReport.stock_exchanges_paid_amount
+                                                    ? profitAndLossReport.stock_exchanges_paid_amount
+                                                    : "0.00"
+                                            )}
+                                            ${placeholderText(
+                                                "stock-exchange.title"
                                             )}) + (
                                             ${currencySymbolHandling(
                                                 allConfigData,

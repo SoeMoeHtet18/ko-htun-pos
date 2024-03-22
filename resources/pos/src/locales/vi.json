@@ -497,6 +497,8 @@
     "stock-exchange.input.sales.validate.label":"Please select sales",
     "stock-exchange.return-in-price.label": "Return In Price",
     "stock-exchange.return-out-price.label": "Return Out Price",
+    "stock-exchange.profit.label": "Stock Exchange Profit",
+    "stock-exchange.profit.label": "Stock Exchange Profit",
     "date-picker.filter.today.label": "Hôm nay",
     "date-picker.filter.this-week.label": "Tuần này",
     "date-picker.filter.last-week.label": "Tuần trước",
