@@ -3847,6 +3847,10 @@ div .rdt_Pagination div:first-of-type svg {
     border-bottom: 2px solid #6571FF;
 }
 
+@page {
+    margin: 0 !important;
+}
+
 .barcode-main {
     border: 1px solid #ccc;
     display: block;
@@ -3860,16 +3864,33 @@ div .rdt_Pagination div:first-of-type svg {
     border: 1px dotted #ccc;
     display: block;
     float: left;
-    font-size: 12px;
+    font-size: 10px;
     line-height: 14px;
     overflow: hidden;
     text-align: center;
     text-transform: uppercase;
+    scale: 1.05;
+}
+
+.barcode-main__barcode-item-new-size {
+    margin-top: 15px !important;
+    /* margin-left: 5px !important; */
+    margin-bottom: 15px !important;
+}
+
+.barcode-main__barcode-item-new-size:first-child {
+    margin-top: 15px !important;
+}
+
+.barcode-main__barcode-item-new-size:last-child {
+    margin-bottom: 0 !important;
 }
 
 .barcode-main__barcode-style {
     padding: 0.04in;
-    width: 1.799in;
+    /* width: 1.799in; */
+    width: 150px;
+    height: 80px;
 }
 
 .barcode-main__barcode-style img {

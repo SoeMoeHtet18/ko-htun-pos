@@ -15,4 +15,4 @@ yarn-error.log
 /.vscode
 !/public/barcode-images
 !/public/import_demo_files
-/public/uploads
+/public/uploads/

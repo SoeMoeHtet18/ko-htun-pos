@@ -175,7 +175,7 @@ class Product extends BaseModel implements HasMedia, JsonResourceful
     {
         /** @var Media $media */
         $media = $this->getMedia(Product::PRODUCT_BARCODE_PATH)->first();
-        if (! empty($media)) {
+        if (!empty($media)) {
             return $media->getFullUrl();
         }
 
@@ -217,7 +217,7 @@ class Product extends BaseModel implements HasMedia, JsonResourceful
             'sale_unit_name' => $this->getSaleUnitName(),
             'stock' => $this->stock,
             'warehouse' => $this->warehouse($this->id) ?? '',
-            'barcode_url' => Storage::url('product_barcode/barcode-PR_'.$this->id.'.png'),
+            'barcode_url' => Storage::url('product_barcode/barcode-PR_' . $this->id . '.png'),
             'in_stock' => $this->inStock($this->id),
         ];
 
@@ -348,9 +348,14 @@ class Product extends BaseModel implements HasMedia, JsonResourceful
      */
     public function warehouse($id)
     {
-        return Managestock::where('product_id', $id)->Join('warehouses', 'manage_stocks.warehouse_id',
-            'warehouses.id')->select(DB::raw('sum(quantity) as total_quantity'),
-                'warehouses.name')->groupBy('warehouse_id')->get();
+        return Managestock::where('product_id', $id)->Join(
+            'warehouses',
+            'manage_stocks.warehouse_id',
+            'warehouses.id'
+        )->select(
+            DB::raw('sum(quantity) as total_quantity'),
+            'warehouses.name'
+        )->groupBy('warehouse_id')->get();
     }
 
     /**
