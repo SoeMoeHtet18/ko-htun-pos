@@ -17,7 +17,8 @@ const ProductSearch = (props) => {
         customProducts,
         searchPurchaseProduct,
         handleValidation,
-        isAllProducts
+        isAllProducts,
+        validations
     } = props;
     const [searchString, setSearchString] = useState("");
     const dispatch = useDispatch();
@@ -30,32 +31,47 @@ const ProductSearch = (props) => {
     const onProductSearch = (code) => {
         if (!values.warehouse_id) {
             handleValidation();
-        } else {
-            setSearchString(code);
-            const newId = products.filter((item) => item.attributes.code === code || item.attributes.code === code.code).map((item) => item.id);
-            const finalIdArrays = customProducts.map((id) => id.product_id);
-            const finalId = finalIdArrays.filter((finalIdArray) => finalIdArray === newId[0]);
-            if (finalId[0] !== undefined) {
-                if (updateProducts.find(exitId => exitId.product_id === finalId[0])) {
-                    dispatch(addToast({
-                        text: getFormattedMessage('globally.product-already-added.validate.message'),
-                        type: toastType.ERROR
-                    }));
-                } else {
-                    searchPurchaseProduct(newId[0])
-                    const pushArray = [...customProducts]
-                    if (updateProducts.filter(product => product.code === code || product.code === code.code).length > 0) {
-                        setUpdateProducts(updateProducts => updateProducts.map((item) => {
-                            return item
-                        }))
-                    } else {
-                        const newProduct = pushArray.find(element => element.product_id === finalId[0]);
-                        setUpdateProducts([...updateProducts, newProduct]);
-                    }
+        } else if(validations && validations.length > 0) {
+            let validate = true;
+            validations.forEach((validation) => {
+                if(!values[validation]) {
+                    validate = false;
+                    handleValidation();
                 }
-                removeSearchClass();
-                setSearchString("");
+            })
+            if(validate) {
+                insertProductInTable(code);
             }
+        } else {
+            insertProductInTable(code);
+        }
+    }
+
+    const insertProductInTable = (code) => {
+        setSearchString(code);
+        const newId = products.filter((item) => item.attributes.code === code || item.attributes.code === code.code).map((item) => item.id);
+        const finalIdArrays = customProducts.map((id) => id.product_id);
+        const finalId = finalIdArrays.filter((finalIdArray) => finalIdArray === newId[0]);
+        if (finalId[0] !== undefined) {
+            if (updateProducts.find(exitId => exitId.product_id === finalId[0])) {
+                dispatch(addToast({
+                    text: getFormattedMessage('globally.product-already-added.validate.message'),
+                    type: toastType.ERROR
+                }));
+            } else {
+                searchPurchaseProduct(newId[0])
+                const pushArray = [...customProducts]
+                if (updateProducts.filter(product => product.code === code || product.code === code.code).length > 0) {
+                    setUpdateProducts(updateProducts => updateProducts.map((item) => {
+                        return item
+                    }))
+                } else {
+                    const newProduct = pushArray.find(element => element.product_id === finalId[0]);
+                    setUpdateProducts([...updateProducts, newProduct]);
+                }
+            }
+            // removeSearchClass();
+            setSearchString("");
         }
     }
 
@@ -93,7 +109,7 @@ const ProductSearch = (props) => {
                 showClear={false}
             />
             <FontAwesomeIcon icon={faSearch}
-                             className='d-flex align-items-center top-0 bottom-0 react-search-icon my-auto text-gray-600 position-absolute'/>
+                className='d-flex align-items-center top-0 bottom-0 react-search-icon my-auto text-gray-600 position-absolute'/>
         </div>
     );
 }

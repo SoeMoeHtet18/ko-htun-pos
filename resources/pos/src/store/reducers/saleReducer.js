@@ -12,6 +12,8 @@ export default (state = {}, action) => {
             return state.map(item => item.id === +action.payload.id ? action.payload : item);
         case saleActionType.DELETE_SALE:
             return state.filter(item => item.id !== action.payload);
+        case saleActionType.FETCH_SALES_BY_WAREHOUSE:
+            return action.payload;
         default:
             return state;
     }

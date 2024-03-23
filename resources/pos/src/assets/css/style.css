@@ -15923,6 +15923,10 @@ textarea.form-control-lg {
   background-color: #31080E !important;
 }
 
+.bg-pink-300 {
+  background-color: #EA868F !important;
+}
+
 .flex-root {
   flex: 1;
 }

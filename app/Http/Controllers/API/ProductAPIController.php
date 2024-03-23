@@ -51,6 +51,14 @@ class ProductAPIController extends AppBaseController
             ]);
         }
 
+        if ($request->get('sale_id') && $request->get('sale_id') != 'null') {
+            $saleId = $request->get('sale_id');
+            $productIds = SaleItem::whereSaleId($saleId)
+                ->pluck('product_id')
+                ->toArray();
+            $products->whereIn('id', $productIds);
+        }
+
         $products = $products->paginate($perPage);
         ProductResource::usingWithCollection();
 
@@ -105,8 +113,8 @@ class ProductAPIController extends AppBaseController
         // return $this->sendError(__('messages.error.product_cant_deleted'));
         // }
 
-        if (File::exists(Storage::path('product_barcode/barcode-PR_'.$id.'.png'))) {
-            File::delete(Storage::path('product_barcode/barcode-PR_'.$id.'.png'));
+        if (File::exists(Storage::path('product_barcode/barcode-PR_' . $id . '.png'))) {
+            File::delete(Storage::path('product_barcode/barcode-PR_' . $id . '.png'));
         }
 
         $this->productRepository->delete($id);

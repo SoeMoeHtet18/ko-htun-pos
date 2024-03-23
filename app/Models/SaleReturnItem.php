@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $sale_return_id
  * @property int $product_id
+ * @property float|null $product_cost
  * @property float|null $product_price
  * @property float|null $net_unit_price
  * @property int $tax_type
@@ -68,6 +69,7 @@ class SaleReturnItem extends BaseModel implements JsonResourceful
      */
     protected $fillable = [
         'product_id',
+        'product_cost',
         'product_price',
         'net_unit_price',
         'tax_type',
@@ -87,6 +89,7 @@ class SaleReturnItem extends BaseModel implements JsonResourceful
      */
     public static $rules = [
         'product_id' => 'required|exists:products,id',
+        'product_cost' => 'nullable|numeric',
         'product_price' => 'nullable|numeric',
         'tax_type' => 'nullable|numeric',
         'tax_value' => 'nullable|numeric',
@@ -103,6 +106,7 @@ class SaleReturnItem extends BaseModel implements JsonResourceful
      * @var string[]
      */
     public $casts = [
+        'product_cost' => 'double',
         'product_price' => 'double',
         'tax_amount' => 'double',
         'tax_value' => 'double',
@@ -134,6 +138,7 @@ class SaleReturnItem extends BaseModel implements JsonResourceful
         $fields = [
             'product_id' => $this->product_id,
             'net_unit_price' => $this->net_unit_price,
+            'product_cost' => $this->product_cost,
             'product_price' => $this->product_price,
             'tax_type' => $this->tax_type,
             'tax_value' => $this->tax_value,

@@ -29,6 +29,7 @@ use App\Http\Controllers\API\SalesPaymentAPIController;
 use App\Http\Controllers\API\SettingAPIController;
 use App\Http\Controllers\API\SmsSettingAPIController;
 use App\Http\Controllers\API\SmsTemplateAPIController;
+use App\Http\Controllers\API\StockExchangeAPIController;
 use App\Http\Controllers\API\SupplierAPIController;
 use App\Http\Controllers\API\TransferAPIController;
 use App\Http\Controllers\API\UnitAPIController;
@@ -249,7 +250,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('adjustments', AdjustmentAPIController::class);
     //    });
 
+    // conversions
     Route::resource('conversions', ConversionAPIController::class);
+
+    // stock exchanges
+    Route::resource('stock-exchanges', StockExchangeAPIController::class);
 
     //purchase return routes
     Route::resource('purchases-return', PurchaseReturnAPIController::class);
@@ -311,6 +316,15 @@ Route::middleware('auth:sanctum')->group(function () {
         [ReportAPIController::class, 'getSellingProductReport']
     );
 
+    // stock-exchange-report
+    Route::get(
+        'stock-exchange-report-excel',
+        [ReportAPIController::class, 'getWarehouseStockExchangeReportExcel']
+    )->name('report-getStockExchangeReportExcel');
+    Route::get('total-stock-exchange-report-excel', [
+        ReportAPIController::class, 'getStockExchangeReportExcel'
+    ])->name('report-stockExchangeReportExcel');
+
     Route::get('supplier-report', [ReportAPIController::class, 'getSupplierReport']);
 
     Route::get('supplier-purchases-report/{supplier_id}', [ReportAPIController::class, 'getSupplierPurchasesReport']);
@@ -322,6 +336,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // profit loss report
     Route::get('profit-loss-report', [ReportAPIController::class, 'getProfitLossReport']);
+
+    // gross profit report
+    Route::get('gross-profit-report-excel', [ReportAPIController::class, 'getGrossProfitReportExcel'])
+        ->name('getGrossProfitReportExcel');
 
     // best customers report
 

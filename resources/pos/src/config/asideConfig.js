@@ -30,7 +30,8 @@ import {
     faRulerHorizontal,
     faLanguage,
     faShieldHalved,
-    faRotate
+    faRotate,
+    faArrowRightArrowLeft
 } from "@fortawesome/free-solid-svg-icons";
 import { getFormattedMessage } from "../shared/sharedMethod";
 
@@ -143,7 +144,7 @@ export default [
                 to: "/app/conversions",
                 name: "conversions",
                 class: "d-flex",
-                fontIcon: <FontAwesomeIcon icon={faRotate} />,
+                fontIcon: <FontAwesomeIcon icon={faArrowRightArrowLeft} />,
                 permission: Permissions.MANAGE_CONVERSIONS,
             },
         ],
@@ -221,6 +222,14 @@ export default [
                 to: "/app/sale-return",
                 class: "d-flex",
                 permission: Permissions.MANAGE_SALE_RETURN,
+            },
+            {
+                title: "stock-exchange.title",
+                name: "stock exchange",
+                fontIcon: <FontAwesomeIcon icon={faRotate} />,
+                to: "/app/stock-exchanges",
+                class: "d-flex",
+                permission: Permissions.MANAGE_STOCK_EXCHANGE,
             },
         ],
     },
@@ -358,6 +367,7 @@ export default [
         customerReportPath: "/app/report/customers",
         customerReportDetailsPath: "/app/report/customers/details",
         registerReportPath: "/app/report/register",
+        stockExchangeReportPath: "/app/report/report-stock-exchange",
         class: "d-flex",
         isSamePrefix: "true",
         permission: Permissions.MANAGE_REPORTS,
@@ -397,6 +407,10 @@ export default [
             {
                 title: getFormattedMessage("top-selling-product.reports.title"),
                 to: "/app/report/report-top-selling-products",
+            },
+            {
+                title: getFormattedMessage("stock-exchange.reports.title"),
+                to: "/app/report/report-stock-exchange",
             },
             {
                 title: getFormattedMessage(

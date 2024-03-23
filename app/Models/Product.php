@@ -383,4 +383,14 @@ class Product extends BaseModel implements HasMedia, JsonResourceful
             'product_unit' => $this->product_unit,
         ];
     }
+
+    public function saleItems()
+    {
+        return $this->hasMany(SaleItem::class, 'product_id', 'id');
+    }
+
+     public function saleReturnItems()
+    {
+        return $this->hasMany(SaleReturnItem::class, 'product_id', 'id');
+    }
 }

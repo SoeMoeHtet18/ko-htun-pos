@@ -12,6 +12,7 @@ use App\Models\Purchase;
 use App\Models\PurchaseReturn;
 use App\Models\Sale;
 use App\Models\SaleReturn;
+use App\Models\StockExchange;
 use App\Repositories\WarehouseRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -101,16 +102,18 @@ class WarehouseAPIController extends AppBaseController
     public function warehouseReport(Request $request)
     {
         $report = [];
-        if ($request->get('warehouse_id') && ! empty($request->get('warehouse_id')) && $request->get('warehouse_id') != 'null') {
+        if ($request->get('warehouse_id') && !empty($request->get('warehouse_id')) && $request->get('warehouse_id') != 'null') {
             $report['sale_count'] = Sale::whereWarehouseId($request->get('warehouse_id'))->count();
             $report['purchase_count'] = Purchase::whereWarehouseId($request->get('warehouse_id'))->count();
             $report['sale_return_count'] = SaleReturn::whereWarehouseId($request->get('warehouse_id'))->count();
             $report['purchase_return_count'] = PurchaseReturn::whereWarehouseId($request->get('warehouse_id'))->count();
+            $report['stock_exchange_count'] = StockExchange::whereWarehouseId($request->get('warehouse_id'))->count();
         } else {
             $report['sale_count'] = Sale::count();
             $report['purchase_count'] = Purchase::count();
             $report['sale_return_count'] = SaleReturn::count();
             $report['purchase_return_count'] = PurchaseReturn::count();
+            $report['stock_exchange_count'] = StockExchange::count();
         }
 
         return $this->sendResponse($report, '');

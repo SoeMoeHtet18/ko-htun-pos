@@ -1,6 +1,6 @@
 export const subTotalCount = (cartItem) => {
     const totalAmount = taxAmount(cartItem) + amountBeforeTax(cartItem);
-    return Number(+totalAmount * cartItem.quantity).toFixed(2);
+    return Number(+totalAmount * (cartItem.quantity ?? 1)).toFixed(2);
 }
 
 export const discountAmount = (cartItem) => {
@@ -9,7 +9,7 @@ export const discountAmount = (cartItem) => {
     } else if (cartItem.discount_type === '2' || cartItem.discount_type === 2) {
         return +cartItem.discount_value;
     }
-    return +cartItem.discount_amount.toFixed(2);
+    return +cartItem.discount_amount?.toFixed(2);
 };
 
 export const discountAmountMultiply = (cartItem) => {
@@ -24,7 +24,7 @@ export const taxAmount = (cartItem) => {
         return ((+cartItem.fix_net_unit - discountAmount(cartItem)) * +cartItem.tax_value) / 100;
     }
 
-    return +cartItem.tax_amount.toFixed(2);
+    return +cartItem.tax_amount?.toFixed(2);
 }
 
 export const taxAmountMultiply = (cartItem) => {
@@ -48,8 +48,8 @@ export const calculateCartTotalTaxAmount = (carts, inputValue) => {
 
     carts.forEach(cartItem => {
         if (taxValue > 0) {
-            price = price + +cartItem.sub_total
-            totalTax = (((+price - inputValue.discount) / 100) * +taxValue) * +cartItem.quantity;
+            price = price + (cartItem.sub_total === 0 || !cartItem.sub_total ? +cartItem.product_price : +cartItem.sub_total);
+            totalTax = (((+price - Number(inputValue.discount)) / 100) * +taxValue) * (cartItem.quantity ? cartItem.quantity : 1);
         }
     })
 
@@ -67,8 +67,13 @@ export const calculateSubTotal = (carts) => {
 export const calculateCartTotalAmount = (carts, inputValue) => {
     let finalTotalAmount
     const value = inputValue && inputValue;
-    let totalAmountAfterDiscount = calculateSubTotal(carts) - value.discount
-    let taxCal = (totalAmountAfterDiscount * inputValue.tax_rate / 100).toFixed(2)
-    finalTotalAmount = Number(totalAmountAfterDiscount) + Number(taxCal) + Number(value.shipping)
+    if(value) {
+        let totalAmountAfterDiscount = calculateSubTotal(carts) - value.discount
+        let taxCal = (totalAmountAfterDiscount * inputValue.tax_rate / 100).toFixed(2)
+        finalTotalAmount = Number(totalAmountAfterDiscount) + Number(taxCal) + Number(value.shipping)
+    } else {
+        finalTotalAmount = Number(calculateSubTotal(carts));
+    }
+    
     return (parseFloat(finalTotalAmount).toFixed(2))
 }

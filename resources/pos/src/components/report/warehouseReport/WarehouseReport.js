@@ -19,10 +19,12 @@ import {
     faArrowLeft,
     faArrowRight,
     faCartPlus,
+    faRotate,
     faShoppingCart,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TopProgressBar from "../../../shared/components/loaders/TopProgressBar";
+import StockExchangeTab from "./StockExchangeTab";
 
 const WarehouseReport = (props) => {
     const {
@@ -165,6 +167,28 @@ const WarehouseReport = (props) => {
                             : "0.00"
                     }
                 />
+
+                <Widget
+                    title={getFormattedMessage(
+                        "stock-exchange.title"
+                    )}
+                    className="bg-danger"
+                    iconClass="bg-pink-300"
+                    icon={
+                        <FontAwesomeIcon
+                            icon={faRotate}
+                            className="fs-1-xl text-white"
+                        />
+                    }
+                    currency={""}
+                    value={
+                        warehouseReportData?.stock_exchange_count
+                            ? parseFloat(
+                                  warehouseReportData?.stock_exchange_count
+                              ).toFixed(2)
+                            : "0.00"
+                    }
+                />
             </Row>
             <Tabs
                 defaultActiveKey="sales"
@@ -217,11 +241,25 @@ const WarehouseReport = (props) => {
                 <Tab
                     eventKey="expenses"
                     title={getFormattedMessage("expenses.title")}
-                    tabClassName="position-relative mb-3"
+                    tabClassName="position-relative mb-3 me-7"
                 >
                     <div className="w-100 mx-auto">
                         {key === "expenses" && (
                             <ExpensesTab
+                                allConfigData={allConfigData}
+                                warehouseValue={warehouseValue}
+                            />
+                        )}
+                    </div>
+                </Tab>
+                <Tab
+                    eventKey="stock-exchanges"
+                    title={getFormattedMessage("stock-exchange.title")}
+                    tabClassName="position-relative mb-3"
+                >
+                    <div className="w-100 mx-auto">
+                        {key === "stock-exchanges" && (
+                            <StockExchangeTab
                                 allConfigData={allConfigData}
                                 warehouseValue={warehouseValue}
                             />

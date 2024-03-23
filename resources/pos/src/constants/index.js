@@ -25,6 +25,7 @@ export const apiBaseURL = {
     PURCHASES: "/purchases",
     TRANSFERS: "/transfers",
     SALES: "/sales",
+    STOCK_EXCHANGES: "/stock-exchanges",
     QUOTATIONS: "/quotations",
     QUOTATIONS_DETAILS: "quotation-info",
     ADJUSTMENTS: "/adjustments",
@@ -353,6 +354,16 @@ export const saleActionType = {
     FETCH_SALE_PAYMENT: "FETCH_SALE_PAYMENT",
     EDIT_SALE_PAYMENT: "EDIT_SALE_PAYMENT",
     DELETE_SALE_PAYMENT: "DELETE_SALE_PAYMENT",
+    FETCH_SALES_BY_WAREHOUSE: "FETCH_SALES_BY_WAREHOUSE"
+};
+
+export const stockExchangeActionType = {
+    FETCH_STOCK_EXCHANGES: "FETCH_STOCK_EXCHANGES",
+    FETCH_STOCK_EXCHANGE: "FETCH_STOCK_EXCHANGE",
+    ADD_STOCK_EXCHANGE: "ADD_STOCK_EXCHANGE",
+    EDIT_STOCK_EXCHANGE: "EDIT_STOCK_EXCHANGE",
+    DELETE_STOCK_EXCHANGE: "DELETE_STOCK_EXCHANGE",
+    STOCK_EXCHANGE_DETAILS: "STOCK_EXCHANGE_DETAILS",
 };
 
 export const holdListActionType = {
@@ -504,6 +515,7 @@ export const constants = {
     CALL_UPDATE_BRAND_API: "CALL_UPDATE_BRAND_API",
     SET_SAVING: "SET_SAVING",
     SET_DEFAULT_COUNTRY: "SET_DEFAULT_COUNTRY",
+    SEARCH_ACTION: "SEARCH_ACTION"
 };
 
 export const dateLabelSelector = {
@@ -573,6 +585,7 @@ export const Permissions = {
     MANAGE_POS_SCREEN: "manage_pos_screen",
     MANAGE_SALE: "manage_sale",
     MANAGE_SALE_RETURN: "manage_sale_return",
+    MANAGE_STOCK_EXCHANGE: "manage_stock_exchange",
     MANAGE_REPORT: "manage_report",
     MANAGE_PRINT_BARCODE: "manage_print_barcode",
     MANAGE_ADJUSTMENTS: "manage_adjustments",
@@ -598,6 +611,7 @@ export const productActionType = {
     FETCH_PRODUCTS_BY_WAREHOUSE: "FETCH_PRODUCTS_BY_WAREHOUSE",
     REMOVE_ALL_PRODUCTS: "REMOVE_ALL_PRODUCTS",
     ADD_IMPORT_PRODUCT: "ADD_IMPORT_PRODUCT",
+    FETCH_PRODUCTS_BY_SALE: "FETCH_PRODUCTS_BY_SALE"
 };
 
 export const posProductActionType = {

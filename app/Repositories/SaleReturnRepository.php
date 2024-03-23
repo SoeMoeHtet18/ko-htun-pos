@@ -206,12 +206,15 @@ class SaleReturnRepository extends BaseRepository
                 throw new UnprocessableEntityHttpException('You can not return given product as there is no sales for it.');
             }
 
-            $saleOfProduct = SaleItem::where('product_id', $saleReturnItem['product_id'])
+            $saleItem = SaleItem::where('product_id', $saleReturnItem['product_id'])
                 ->whereHas('sale', function (Builder $query) use ($input) {
                     $query->where('warehouse_id', $input['warehouse_id'])
                         ->where('id', $input['sale_id']);
-                })
-                ->sum('quantity');
+                });
+            
+            $saleOfProduct = $saleItem->sum('quantity');
+
+            $saleProduct = $saleItem->first();
 
             //            if ($saleOfProduct <= 0) {
             //                throw new UnprocessableEntityHttpException('There is no quantity remains to return.');
@@ -243,6 +246,7 @@ class SaleReturnRepository extends BaseRepository
             //            }
 
             $item = $this->calculationSaleReturnItems($saleReturnItem);
+            $item['product_cost'] = $saleProduct->product_cost;
             $saleReturnItem = new SaleReturnItem($item);
             $saleReturn->saleReturnItems()->save($saleReturnItem);
         }

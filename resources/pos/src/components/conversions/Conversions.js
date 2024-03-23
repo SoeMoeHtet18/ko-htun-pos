@@ -17,7 +17,6 @@ const Conversions = ( props ) => {
     const { conversions, fetchConversions, totalRecord, isLoading, fetchFrontSetting, frontSetting, warehouses, fetchAllWarehouses, allConfigData } = props;
     const [ deleteModel, setDeleteModel ] = useState( false );
     const [ detailsModel, setDetailsModel ] = useState( false );
-    const [ isShowPaymentModel, setIsShowPaymentModel ] = useState( false );
     const [ isDelete, setIsDelete ] = useState( null );
     const [ isDetails, setIsDetails ] = useState( null );
     const [ lgShow, setLgShow ] = useState( false );
@@ -135,7 +134,7 @@ const Conversions = ( props ) => {
             <TabTitle title={placeholderText( 'conversions.title' )} />
             {newArray.length > 1 &&
                 <ReactDataTable columns={columns} items={itemsValue} to='#/app/conversions/create'
-                    ButtonValue={getFormattedMessage( 'conversions.create.title' )} isShowPaymentModel={isShowPaymentModel}
+                    ButtonValue={getFormattedMessage( 'conversions.create.title' )}
                     onChange={onChange} totalRows={totalRecord} goToEdit={goToEdit} isShowFilterField
                     isLoading={isLoading} isWarehouseType={true} warehouseOptions={newArray} warehouses={warehouses} />}
             <DeleteConversion onClickDeleteModel={onClickDeleteModel} deleteModel={deleteModel} onDelete={isDelete} />

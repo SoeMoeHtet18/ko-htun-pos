@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Exports\ExpenseWarehouseReportExport;
+use App\Exports\GrossProfitReportExport;
 use App\Exports\ProductPurchaseReportExport;
 use App\Exports\ProductPurchaseReturnReportExport;
 use App\Exports\ProductSaleReportExport;
@@ -13,6 +14,8 @@ use App\Exports\PurchasesWarehouseReportExport;
 use App\Exports\SaleReportExport;
 use App\Exports\SaleReturnWarehouseReportExport;
 use App\Exports\SalesWarehouseReportExport;
+use App\Exports\StockExchangeReportExport;
+use App\Exports\StockExchangeWarehouseReportExport;
 use App\Exports\StockReportExport;
 use App\Exports\TopSellingProductReportExport;
 use App\Http\Controllers\AppBaseController;
@@ -29,6 +32,9 @@ use App\Models\Sale;
 use App\Models\SaleReturn;
 use App\Models\SaleReturnItem;
 use App\Models\SalesPayment;
+use App\Models\StockExchange;
+use App\Models\StockExchangeReturnInItem;
+use App\Models\StockExchangeReturnOutItem;
 use App\Models\Supplier;
 use App\Models\Warehouse;
 use App\Repositories\CustomerRepository;
@@ -134,6 +140,18 @@ class ReportAPIController extends AppBaseController
         return $this->sendResponse($data, 'expenses Report retrieved successfully');
     }
 
+    public function getWarehouseStockExchangeReportExcel(Request $request): JsonResponse
+    {
+        if (Storage::exists('excel/stock-exchange-report-excel.xlsx')) {
+            Storage::delete('excel/stock-exchange-report-excel.xlsx');
+        }
+        Excel::store(new StockExchangeWarehouseReportExport, 'excel/stock-exchange-report-excel.xlsx');
+
+        $data['stock_exchange_excel_url'] = Storage::url('excel/stock-exchange-report-excel.xlsx');
+
+        return $this->sendResponse($data, 'Stock Exchange Report retrieved successfully');
+    }
+
     public function getSalesReportExcel(Request $request): JsonResponse
     {
         if (Storage::exists('excel/total-sales-report-excel.xlsx')) {
@@ -168,6 +186,18 @@ class ReportAPIController extends AppBaseController
         $data['top_selling_product_excel_url'] = Storage::url('excel/top-selling-product-report-excel.xlsx');
 
         return $this->sendResponse($data, 'Top selling product Report retrieved successfully');
+    }
+
+    public function getStockExchangeReportExcel(Request $request): JsonResponse
+    {
+        if (Storage::exists('excel/total-stock-exchange-report-excel.xlsx')) {
+            Storage::delete('excel/total-stock-exchange-report-excel.xlsx');
+        }
+        Excel::store(new StockExchangeReportExport, 'excel/total-stock-exchange-report-excel.xlsx');
+
+        $data['total_stock_exchange_excel_url'] = Storage::url('excel/total-stock-exchange-report-excel.xlsx');
+
+        return $this->sendResponse($data, 'Stock Exchange Report retrieved successfully');
     }
 
     /**
@@ -554,12 +584,22 @@ class ReportAPIController extends AppBaseController
             'date',
             [$request->get('start_date'), $request->get('end_date')]
         )->sum('amount');
+        $data['stock_exchanges'] = StockExchange::whereBetween(
+            'date',
+            [$request->get('start_date'), $request->get('end_date')]
+        )->sum('grand_total');
+
         $data['sales_payment_amount'] = SalesPayment::whereBetween(
             'payment_date',
             [$request->get('start_date'), $request->get('end_date')]
         )->sum('amount');
-        $data['Revenue'] = $data['sales'] - $data['sale_returns'];
-        $data['payments_received'] = $data['sales_payment_amount'] + $data['purchase_returns'];
+        $data['stock_exchanges_paid_amount'] = StockExchange::where('payment_status', 1)
+            ->whereBetween(
+                'date',
+                [$request->get('start_date'), $request->get('end_date')]
+            )->sum('grand_total');
+        $data['Revenue'] = ($data['sales'] + $data['stock_exchanges']) - $data['sale_returns'];
+        $data['payments_received'] = $data['sales_payment_amount'] + $data['stock_exchanges_paid_amount'] + $data['purchase_returns'];
 
         $productCost = 0;
         $productItemCost = 0;
@@ -589,9 +629,43 @@ class ReportAPIController extends AppBaseController
 
         $data['product_cost'] = $productCost - $productItemCost;
 
-        $data['gross_profit'] = $data['sales'] - $data['product_cost'] - $data['sale_returns'];
+        $stockExchangesIds = StockExchange::whereBetween(
+            'date',
+            [$request->get('start_date'), $request->get('end_date')]
+        )->pluck('id')->toArray();
+        $stockExchanges = StockExchange::whereIn('id', $stockExchangesIds);
+
+        $returnInItems = StockExchangeReturnInItem::whereIn('stock_exchange_id', $stockExchangesIds);
+        $returnOutItems = StockExchangeReturnOutItem::whereIn('stock_exchange_id', $stockExchangesIds);
+
+        // cost & price
+        $returnInCost = $returnInItems->sum('product_cost');
+        $returnOutCost = $returnOutItems->sum('product_cost');
+        $returnInPrice = $returnInItems->sum('product_price');
+        $returnOutPrice = $returnOutItems->sum('product_price');
+
+        // discount & tax
+        $stockExchangeDiscount = $stockExchanges->sum('discount');
+        $stockExchangeTax = $stockExchanges->sum('tax_amount');
+
+        $data['stock_exchange_profit'] = (($returnOutPrice + $stockExchangeTax) - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+        // $data['stock_exchange_profit'] = ($returnOutPrice - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+
+        $data['gross_profit'] = ($data['sales'] + $data['stock_exchange_profit']) - $data['product_cost'] - $data['sale_returns'];
 
         return $this->sendResponse($data, 'Profit loss report info retrieved successfully');
+    }
+
+    public function getGrossProfitReportExcel()
+    {
+        if (Storage::exists('excel/gross-profit-excel.xlsx')) {
+            Storage::delete('excel/gross-profit-excel.xlsx');
+        }
+        Excel::store(new GrossProfitReportExport, 'excel/gross-profit-excel.xlsx');
+
+        $data['gross_profit_report_excel_url'] = Storage::url('excel/gross-profit-excel.xlsx');
+
+        return $this->sendResponse($data, 'Gross Profit retrieved successfully');
     }
 
     public function getCustomerReport(Request $request)

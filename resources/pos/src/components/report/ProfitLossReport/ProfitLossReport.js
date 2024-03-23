@@ -20,6 +20,7 @@ import {
     faSquareMinus,
     faMoneyBillTrendUp,
     faMoneyBillTransfer,
+    faRotate,
 } from "@fortawesome/free-solid-svg-icons";
 import DateRangePicker from "../../../shared/datepicker/DateRangePicker";
 import { Filters } from "../../../constants";
@@ -27,6 +28,8 @@ import { dateFormat } from "../../../constants";
 import moment from "moment";
 import { fetchProfitAndLossReports } from "../../../store/action/profitAndLossReportAction";
 import { fetchFrontSetting } from "../../../store/action/frontSettingAction";
+import { Button } from "react-bootstrap-v5";
+import { grossProfitExcelAction } from "../../../store/action/grossProfitExcelAction";
 
 const ProfitLossReport = (props) => {
     const {
@@ -34,12 +37,14 @@ const ProfitLossReport = (props) => {
         frontSetting,
         fetchProfitAndLossReports,
         profitAndLossReport,
+        grossProfitExcelAction,
         allConfigData,
     } = props;
     const [selectDate, setSelectDate] = useState();
     const [created_at] = useState(Filters.OBJ.created_at);
     const startMonth = moment().startOf("month").format(dateFormat.NATIVE);
     const today = moment().format(dateFormat.NATIVE);
+    const [downloadExcel, setDownloadExcel] = useState(false);
 
     useEffect(() => {
         fetchFrontSetting();
@@ -48,6 +53,12 @@ const ProfitLossReport = (props) => {
     useEffect(() => {
         onChangeDidMount();
     }, [selectDate]);
+
+    useEffect(() => {
+        if(downloadExcel) {
+            grossProfitExcelAction(selectDate, setDownloadExcel);
+        }
+    }, [downloadExcel]);
 
     const onChange = (filter) => {
         fetchProfitAndLossReports(filter, true);
@@ -67,17 +78,34 @@ const ProfitLossReport = (props) => {
         onChange(filters);
     };
 
+    const onExcelClick = () => {
+        setDownloadExcel(true);
+    };
+
     return (
         <MasterLayout>
             <TopProgressBar />
             <TabTitle title={placeholderText("profit-loss.reports.title")} />
-            <div className={"d-flex justify-content-center"}>
-                <DateRangePicker
-                    onDateSelector={onDateSelector}
-                    isProfitReport={true}
-                    selectDate={selectDate}
-                />
+             <div className="d-flex justify-content-center">
+                    <DateRangePicker
+                        onDateSelector={onDateSelector}
+                        isProfitReport={true}
+                        selectDate={selectDate}
+                    />
+                </div>
+            <div className="d-flex justify-content-end">
+                <div>
+                    <Button
+                        type="button"
+                        variant="primary"
+                        onClick={() => onExcelClick()}
+                        className="btn-light-primary"
+                    >
+                        {getFormattedMessage("excel.btn.label")}
+                    </Button>
+                </div>
             </div>
+
             <Row className="g-4">
                 <Col className="col-12 mb-4">
                     <Row className={"align-items-start"}>
@@ -204,6 +232,29 @@ const ProfitLossReport = (props) => {
                         />
 
                         <ProfitLossWidget
+                            className={"widget-bg-yellow"}
+                            currency={
+                                frontSetting.value &&
+                                frontSetting.value.currency_symbol
+                            }
+                            icon={
+                                <FontAwesomeIcon
+                                    icon={faRotate}
+                                    className="fs-1-xl text-white"
+                                />
+                            }
+                            title={getFormattedMessage("stock-exchange.title")}
+                            allConfigData={allConfigData}
+                            value={
+                                profitAndLossReport.stock_exchanges
+                                    ? parseFloat(
+                                          profitAndLossReport.stock_exchanges
+                                      ).toFixed(2)
+                                    : "0.00"
+                            }
+                        />
+
+                        <ProfitLossWidget
                             className={"widget-bg-pink"}
                             currency={
                                 frontSetting.value &&
@@ -227,7 +278,16 @@ const ProfitLossReport = (props) => {
                                                 ? profitAndLossReport.sales
                                                 : "0.00"
                                         )}
-                                        ${placeholderText("sales.title")}) - (
+                                        ${placeholderText("sales.title")} ) + ( ${currencySymbolHandling(
+                                            allConfigData,
+                                            frontSetting.value &&
+                                                frontSetting.value
+                                                    .currency_symbol,
+                                            profitAndLossReport.stock_exchanges
+                                                ? profitAndLossReport.stock_exchanges
+                                                : "0.00"
+                                        )}
+                                        ${placeholderText("stock-exchange.title")} ) - (
                                         ${currencySymbolHandling(
                                             allConfigData,
                                             frontSetting.value &&
@@ -239,7 +299,7 @@ const ProfitLossReport = (props) => {
                                         )}
                                         ${placeholderText(
                                             "sales-return.title"
-                                        )})`}
+                                        )} )`}
                             value={
                                 profitAndLossReport.Revenue
                                     ? parseFloat(
@@ -277,6 +337,18 @@ const ProfitLossReport = (props) => {
                                             )}
                                             ${placeholderText(
                                                 "sales.title"
+                                            )})  + (
+                                            ${currencySymbolHandling(
+                                                allConfigData,
+                                                frontSetting.value &&
+                                                    frontSetting.value
+                                                        .currency_symbol,
+                                                profitAndLossReport.stock_exchange_profit
+                                                    ? profitAndLossReport.stock_exchange_profit
+                                                    : "0.00"
+                                            )}
+                                            ${placeholderText(
+                                                "stock-exchange.profit.label"
                                             )})  - (
                                                 ${currencySymbolHandling(
                                                     allConfigData,
@@ -345,6 +417,18 @@ const ProfitLossReport = (props) => {
                                                 frontSetting.value &&
                                                     frontSetting.value
                                                         .currency_symbol,
+                                                profitAndLossReport.stock_exchanges_paid_amount
+                                                    ? profitAndLossReport.stock_exchanges_paid_amount
+                                                    : "0.00"
+                                            )}
+                                            ${placeholderText(
+                                                "stock-exchange.title"
+                                            )}) + (
+                                            ${currencySymbolHandling(
+                                                allConfigData,
+                                                frontSetting.value &&
+                                                    frontSetting.value
+                                                        .currency_symbol,
                                                 profitAndLossReport.purchase_returns
                                                     ? profitAndLossReport.purchase_returns
                                                     : "0.00"
@@ -381,4 +465,5 @@ const mapStateToProps = (state) => {
 export default connect(mapStateToProps, {
     fetchProfitAndLossReports,
     fetchFrontSetting,
+    grossProfitExcelAction,
 })(ProfitLossReport);
