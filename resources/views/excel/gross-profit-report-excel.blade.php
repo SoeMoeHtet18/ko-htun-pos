@@ -16,12 +16,12 @@
     <table width="100%" cellspacing="0" cellpadding="10" style="margin-top: 20px;">
         <thead>
             <tr style="background-color: dodgerblue;">
-                <th style="width: 200%">{{ __('messages.pdf.product_code') }}</th>
-                <th style="width: 300%">{{ __('messages.pdf.product_name') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.qty') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.cost') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.price') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.profit') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.product_code') }}</th>
+                <th style="font-weight:600; width: 300%">{{ __('messages.pdf.product_name') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.qty') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.cost') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.price') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.profit') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -81,13 +81,13 @@
     <table width="100%" cellspacing="0" cellpadding="10" style="margin-top: 20px;">
         <thead>
             <tr style="background-color: dodgerblue;">
-                <th style="width: 200%">{{ __('messages.pdf.return_in_item') }}</th>
-                <th style="width: 300%">{{ __('messages.pdf.return_out_item') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.return_in_cost') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.return_in_price') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.return_out_cost') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.return_out_price') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.profit') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.return_in_item') }}</th>
+                <th style="font-weight:600; width: 300%">{{ __('messages.pdf.return_out_item') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.return_in_cost') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.return_in_price') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.return_out_cost') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.return_out_price') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.profit') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -176,12 +176,12 @@
     <table width="100%" cellspacing="0" cellpadding="10" style="margin-top: 20px;">
         <thead>
             <tr style="background-color: dodgerblue;">
-                <th style="width: 200%">{{ __('messages.pdf.product_code') }}</th>
-                <th style="width: 300%">{{ __('messages.pdf.product_name') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.qty') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.cost') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.price') }}</th>
-                <th style="width: 200%">{{ __('messages.pdf.loss') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.product_code') }}</th>
+                <th style="font-weight:600; width: 300%">{{ __('messages.pdf.product_name') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.qty') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.cost') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.price') }}</th>
+                <th style="font-weight:600; width: 200%">{{ __('messages.pdf.loss') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -241,32 +241,32 @@
     <table width="100%" cellspacing="0" cellpadding="10" style="margin-top: 20px;">
         <thead>
             <tr style="background-color: dodgerblue;">
-                <th style="width: 300%">{{ __('messages.pdf.type') }}</th>
-                <th style="width: 500%">{{ __('messages.pdf.total_amount') }}</th>
+                <th style="font-weight:600; width: 300%; text-align:center;">{{ __('messages.pdf.type') }}</th>
+                <th style="font-weight:600; width: 500%; text-align:center;">{{ __('messages.pdf.total_amount') }}</th>
             </tr>
         </thead>
         <tbody>
             <tr align="center">
-                <td>Sale Profit</td>
+                <td style="font-weight:500;">Sale Profit</td>
                 <td>{{ $saleProfit }}</td>
             </tr>
             <tr align="center">
-                <td>Stock Exchange Profit</td>
+                <td style="font-weight:500;">Stock Exchange Profit</td>
                 <td>{{ $stockExchangeProfit }}</td>
             </tr>
             <tr align="center">
-                <td>Sub Profit</td>
+                <td style="font-weight:500;">Sub Profit</td>
                 @php
                 $subProfit = $saleProfit + $stockExchangeProfit;
                 @endphp
                 <td>{{ $subProfit }}</td>
             </tr>
             <tr align="center">
-                <td>Sale Return Loss</td>
+                <td style="font-weight:500;">Sale Return Loss</td>
                 <td>{{ $saleReturnLoss }}</td>
             </tr>
             <tr align="center">
-                <td>Total Profit</td>
+                <td style="font-weight:500;">Total Profit</td>
                 <td>{{ $subProfit - $saleReturnLoss }}</td>
             </tr>
         </tbody>
