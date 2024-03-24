@@ -47,7 +47,7 @@ class StockExchangeAPIController extends AppBaseController
         })->exists();
 
         $stockExchanges = $this->stockExchangeRepository;
-
+        
         if ($warehouse || $sales || $customer || $returnInItem || $returnOutItem) {
             $stockExchanges->whereHas('warehouse', function (Builder $q) use ($search, $warehouse) {
                 if ($warehouse) {

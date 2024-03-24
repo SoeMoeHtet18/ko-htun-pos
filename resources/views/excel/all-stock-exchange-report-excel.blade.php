@@ -24,6 +24,7 @@
                 <th style="width: 200%;">{{ __('messages.pdf.return_in_cost') }}</th>
                 <th style="width: 300%;">{{ __('messages.pdf.return_out_cost') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.return_in_price') }}</th>
+                <th style="width: 200%;">{{ __('messages.pdf.return_in_price_on_sale') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.return_out_price') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.discount') }}</th>
                 <th style="width: 200%;">{{ __('messages.pdf.sub_total') }}</th>
@@ -75,7 +76,21 @@
                     @php
                     $return_in_price = 0;
                     foreach($stockExchange->returnInItems as $item) {
-                    $return_in_price += $item->product_price ?? 0;
+                        $return_in_price += $item->product_price ?? 0;
+                    }
+                    @endphp
+                    {{ $return_in_price }}
+                </td>
+                 <td>
+                    @php
+                    $sale_price = 0;
+                    foreach($stockExchange->returnInItems as $item) {
+                        $saleItem = $item->saleItem();
+                        if($saleItem->product_price !== $saleItem->net_unit_price) {
+                            $sale_price += $saleItem->net_unit_price;
+                        } else {
+                            $sale_price += $item->product_price ?? 0;
+                        }
                     }
                     @endphp
                     {{ $return_in_price }}
@@ -91,9 +106,9 @@
                 </td>
                 <td>{{$stockExchange->discount}}</td>
                 <td>
-                    {{ ($return_out_price -  $stockExchange->discount) - $return_in_price}}
+                    {{ ($return_out_price -  $stockExchange->discount) - ($return_in_price === $sale_price ? $return_in_price : $sale_price )}}
                 </td>
-                <td>{{(($return_out_price -  $stockExchange->discount) - $return_out_cost) - ($return_in_price - $return_in_cost)}}</td>
+                <td>{{(($return_out_price -  $stockExchange->discount) - $return_out_cost) - (($return_in_price === $sale_price ? $return_in_price : $sale_price ) - $return_in_cost)}}</td>
             </tr>
             @endforeach
         </tbody>
