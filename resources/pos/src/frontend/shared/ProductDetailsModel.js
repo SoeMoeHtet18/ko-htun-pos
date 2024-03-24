@@ -58,7 +58,7 @@ const ProductDetailsModel = (props) => {
         setProduct(cartProduct);
         setUnitPrice(product.product_price && parseFloat(product.product_price).toFixed(2));
         setDiscount(product.discount_value ? (product.discount_value).toFixed(2) : discount);
-        setOrderTax(parseFloat(product.tax_value).toFixed(2));
+        setOrderTax(product.tax_value ? parseFloat(product.tax_value).toFixed(2) : 0);
         setTaxType(product.tax_type === 1 || product.tax_type === '1' ? {
             value: 1, label:  getFormattedMessage("tax-type.filter.exclusive.label")
         } : {
@@ -179,14 +179,17 @@ const ProductDetailsModel = (props) => {
 
     //tax amount function
     const taxAmount = (totalCost) => {
-        const total = totalCost - discountAmount(product.product_price)
         let tax = 0;
-        if (orderTax > 0 && taxType.value === '2' || taxType.value === 2) {
-            tax = +totalCost
-        } else if (orderTax > 0 && taxType.value === '1' || taxType.value === 1) {
-            let exclusiveTax = taxType.value === '1' || taxType.value === 1 ? parseFloat(total).toFixed(2) * Number(orderTax) / Number(100) : 0;
-            tax = +exclusiveTax;
+        if(product.tax_value) {
+            const total = totalCost - discountAmount(product.product_price);
+            if (orderTax > 0 && taxType.value === '2' || taxType.value === 2) {
+                tax = +totalCost
+            } else if (orderTax > 0 && taxType.value === '1' || taxType.value === 1) {
+                let exclusiveTax = taxType.value === '1' || taxType.value === 1 ? parseFloat(total).toFixed(2) * Number(orderTax) / Number(100) : 0;
+                tax = +exclusiveTax;
+            }
         }
+
         return tax;
     };
 
@@ -194,6 +197,7 @@ const ProductDetailsModel = (props) => {
     const onSaveDetailModal = () => {
         const newProduct = product;
         const Valid = handleValidation();
+
         if (Valid) {
             if (productModelId === product.id) {
                 newProduct.net_unit_cost = calculateProductCost(product);
@@ -207,6 +211,7 @@ const ProductDetailsModel = (props) => {
                 newProduct.sale_unit = saleUnitType[0] ? saleUnitType[0].value : saleUnitType || saleUnitType ? saleUnitType.value : saleUnitType;
                 onProductUpdateInCart(newProduct);
             }
+
             updateCost(newProduct.net_unit_cost = calculateProductCost(unitPrice));
             openProductDetailModal(false);
         }
