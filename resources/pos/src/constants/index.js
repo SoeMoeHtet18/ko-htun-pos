@@ -730,7 +730,7 @@ export const paymentStatusOptions = [
     { id: 0, name: "unit.filter.all.label" },
     { id: 1, name: "payment-status.filter.paid.label" },
     { id: 2, name: "payment-status.filter.unpaid.label" },
-    { id: 3, name: "payment-status.filter.partial.label" },
+    // { id: 3, name: "payment-status.filter.partial.label" },
 ];
 
 export const unitOptions = [

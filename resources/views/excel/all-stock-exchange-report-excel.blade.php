@@ -93,7 +93,7 @@
                         }
                     }
                     @endphp
-                    {{ $return_in_price }}
+                    {{ $sale_price }}
                 </td>
                 <td>
                     @php

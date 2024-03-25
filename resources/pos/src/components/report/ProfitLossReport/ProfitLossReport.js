@@ -6,7 +6,7 @@ import {
     getFormattedMessage,
     placeholderText,
 } from "../../../shared/sharedMethod";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import TopProgressBar from "../../../shared/components/loaders/TopProgressBar";
 import { Col, Row } from "react-bootstrap";
 import ProfitLossWidget from "../../../shared/Widget/ProfitLossWidget";
@@ -30,6 +30,7 @@ import { fetchProfitAndLossReports } from "../../../store/action/profitAndLossRe
 import { fetchFrontSetting } from "../../../store/action/frontSettingAction";
 import { Button } from "react-bootstrap-v5";
 import { grossProfitExcelAction } from "../../../store/action/grossProfitExcelAction";
+import FilterDropdown from "../../../shared/filterMenu/FilterDropdown";
 
 const ProfitLossReport = (props) => {
     const {
@@ -45,6 +46,10 @@ const ProfitLossReport = (props) => {
     const startMonth = moment().startOf("month").format(dateFormat.NATIVE);
     const today = moment().format(dateFormat.NATIVE);
     const [downloadExcel, setDownloadExcel] = useState(false);
+    const [isTaxExclusive, setIsTaxExclusive]= useState(false);
+    const [isShippingExclusive, setIsShippingExclusive]= useState(false);
+    const [paymentStatus, setPaymentStatus] = useState();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         fetchFrontSetting();
@@ -52,7 +57,7 @@ const ProfitLossReport = (props) => {
 
     useEffect(() => {
         onChangeDidMount();
-    }, [selectDate]);
+    }, [selectDate, isTaxExclusive, isShippingExclusive, paymentStatus]);
 
     useEffect(() => {
         if(downloadExcel) {
@@ -68,12 +73,15 @@ const ProfitLossReport = (props) => {
         setSelectDate(date.params);
     };
 
-    const onChangeDidMount = () => {
+    const onChangeDidMount = (customFilters) => {
         const filters = {
             created_at: created_at,
             search: "",
             start_date: selectDate ? selectDate.start_date : startMonth,
             end_date: selectDate ? selectDate.end_date : today,
+            is_tax_exclusive: isTaxExclusive,
+            is_shipping_exclusive: isShippingExclusive,
+            payment_status: paymentStatus ? paymentStatus.value : null,
         };
         onChange(filters);
     };
@@ -82,29 +90,67 @@ const ProfitLossReport = (props) => {
         setDownloadExcel(true);
     };
 
+    const onTaxChange = (value) => {
+        dispatch({ type: "RESET_OPTION", payload: false });
+        setIsTaxExclusive(value);
+        dispatch({ type: "ON_TOGGLE", payload: false });
+    }
+
+    const onShippingChange = (value) => {
+        dispatch({ type: "RESET_OPTION", payload: false });
+        setIsShippingExclusive(value);
+        dispatch({ type: "ON_TOGGLE", payload: false });
+    }
+
+     const onPaymentStatusChange = (obj) => {
+        dispatch({ type: "RESET_OPTION", payload: false });
+        setPaymentStatus(obj);
+        dispatch({ type: "ON_TOGGLE", payload: false });
+    };
+
+    const onResetClick = () => {
+        setIsTaxExclusive(false);
+        setIsShippingExclusive(false);
+        setPaymentStatus( { label: 'All', value: '0' } );
+        dispatch( { type: 'ON_TOGGLE', payload: false } );
+    }
+
     return (
         <MasterLayout>
             <TopProgressBar />
             <TabTitle title={placeholderText("profit-loss.reports.title")} />
              <div className="d-flex justify-content-center">
-                    <DateRangePicker
-                        onDateSelector={onDateSelector}
-                        isProfitReport={true}
-                        selectDate={selectDate}
-                    />
-                </div>
-            <div className="d-flex justify-content-end">
-                <div>
-                    <Button
-                        type="button"
-                        variant="primary"
-                        onClick={() => onExcelClick()}
-                        className="btn-light-primary"
-                    >
-                        {getFormattedMessage("excel.btn.label")}
-                    </Button>
-                </div>
+                <DateRangePicker
+                    onDateSelector={onDateSelector}
+                    isProfitReport={true}
+                    selectDate={selectDate}
+                />
             </div>
+              <Col
+                xxl={12}
+                className="d-flex flex-wrap align-items-start justify-content-end col-12 col-md-9 col-lg-8"
+            >
+                <FilterDropdown
+                    isPaymentStatus={true}
+                    paymentStatus={paymentStatus}
+                    onPaymentStatusChange={onPaymentStatusChange}
+                    isTax={true}
+                    isTaxExclusive={isTaxExclusive}
+                    onTaxChange={onTaxChange}
+                    isShipping={true}
+                    isShippingExclusive={isShippingExclusive}
+                    onShippingChange={onShippingChange}
+                    onResetClick={onResetClick}
+                />
+                <Button
+                    type="button"
+                    variant="primary"
+                    onClick={() => onExcelClick()}
+                    className="btn-light-primary"
+                >
+                    {getFormattedMessage("excel.btn.label")}
+                </Button>
+            </Col>
 
             <Row className="g-4">
                 <Col className="col-12 mb-4">
