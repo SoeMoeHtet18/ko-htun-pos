@@ -61,7 +61,14 @@ class DefaultPermissionsSeeder extends Seeder
                 'name' => 'manage_expenses',
                 'display_name' => 'Manage Expenses',
             ],
-
+            [
+                'name' => 'manage_conversions',
+                'display_name' => 'Manage Conversions',
+            ],
+            [
+                'name' => 'manage_stock_exchange',
+                'display_name' => 'MANAGE STOCK EXCHANGE'
+            ]
         ];
 
         foreach ($permissions as $permission) {
