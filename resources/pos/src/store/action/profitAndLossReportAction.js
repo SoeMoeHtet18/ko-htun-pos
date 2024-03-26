@@ -15,6 +15,7 @@ export const fetchProfitAndLossReports =
         if (isLoading) {
             dispatch(setLoading(true));
         }
+        console.log(filter);
         let url = apiBaseURL.PROFIT_AND_LOSS_REPORT;
         if (
             !_.isEmpty(filter) &&

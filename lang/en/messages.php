@@ -74,7 +74,8 @@
     'profit' => 'Profit',
     'qty' => 'Qty',
     'loss' => 'Loss',
-    'type' => 'Type'
+    'type' => 'Type',
+    'return_in_price_on_sale' => 'Price On Sale'
   ),
   'error' =>
   array(

@@ -48,6 +48,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -78,6 +79,22 @@ class ReportAPIController extends AppBaseController
         $this->purchaseReturnRepository = $purchaseReturnRepository;
         $this->supplierRepository = $supplierRepository;
         $this->customerRepository = $customerRepository;
+    }
+
+    private function calculateTotal($items, $isTaxExclusive, $isShippingExclusive) {
+        $total = $items->sum('grand_total');
+        
+        return $this->filterTaxAndShipping($total, $items, $isTaxExclusive, $isShippingExclusive);
+    }
+
+    private function filterTaxAndShipping($total, $items, $isTaxExclusive, $isShippingExclusive) {
+        if($isTaxExclusive === true || $isTaxExclusive === 'true') {
+            $total = $total - $items->sum('tax_amount');
+        } 
+        if($isShippingExclusive === true || $isShippingExclusive === 'true') {
+            $total = $total - $items->sum('shipping');
+        }
+        return $total;
     }
 
     public function getWarehouseSaleReportExcel(Request $request): JsonResponse
@@ -563,55 +580,86 @@ class ReportAPIController extends AppBaseController
 
     public function getProfitLossReport(Request $request)
     {
+        $isTaxExclusive = $request->is_tax_exclusive ?? null;
+        $isShippingExclusive = $request->is_shipping_exclusive ?? null;
+        $paymentStatus = $request->payment_status ?? null;
+
         $data = [];
-        $data['sales'] = Sale::whereBetween(
+        // collect grand total inclusiving tax and shipping fees
+
+        $sales = Sale::whereBetween(
             'date',
             [$request->get('start_date'), $request->get('end_date')]
-        )->sum('grand_total');
-        $data['purchase_returns'] = PurchaseReturn::whereBetween(
+        )->when($paymentStatus, function(Builder $q) use ($paymentStatus) {
+            $q->where('payment_status', $paymentStatus);
+        });
+        $data['sales'] = $this->calculateTotal($sales, $isTaxExclusive, $isShippingExclusive);
+
+        $saleReturns =  SaleReturn::whereBetween(
             'date',
             [$request->get('start_date'), $request->get('end_date')]
-        )->sum('grand_total');
-        $data['purchases'] = Purchase::whereBetween(
+        )->when($paymentStatus, function($q) use ($paymentStatus) {
+            $q->whereHas('sale', function($q) use ($paymentStatus) {
+                $q->where('payment_status', $paymentStatus);
+            });
+        });
+        $data['sale_returns'] = $this->calculateTotal($saleReturns, $isTaxExclusive, $isShippingExclusive);
+        
+        $purchaseReturns = PurchaseReturn::whereBetween(
             'date',
             [$request->get('start_date'), $request->get('end_date')]
-        )->sum('grand_total') - $data['purchase_returns'];
-        $data['sale_returns'] = SaleReturn::whereBetween(
+        )->when($paymentStatus, function(Builder $q) use ($paymentStatus) {
+            $q->where('payment_status', $paymentStatus);
+        });
+        $data['purchase_returns'] = $this->calculateTotal($purchaseReturns, $isTaxExclusive, $isShippingExclusive);
+
+        $purchases = Purchase::whereBetween(
             'date',
             [$request->get('start_date'), $request->get('end_date')]
-        )->sum('grand_total');
+        );
+        $data['purchases'] = $this->calculateTotal($purchases, $isTaxExclusive, $isShippingExclusive) - $data['purchase_returns'];
+
         $data['expenses'] = Expense::whereBetween(
             'date',
             [$request->get('start_date'), $request->get('end_date')]
         )->sum('amount');
-        $data['stock_exchanges'] = StockExchange::whereBetween(
+        
+        $stockExchanges = StockExchange::whereBetween(
             'date',
             [$request->get('start_date'), $request->get('end_date')]
-        )->sum('grand_total');
+        )->when($paymentStatus, function(Builder $q) use ($paymentStatus) {
+            $q->where('payment_status', $paymentStatus);
+        });
+        $data['stock_exchanges'] = $this->calculateTotal($stockExchanges, $isTaxExclusive, $isShippingExclusive) - $data['purchase_returns'];
 
-        $data['sales_payment_amount'] = SalesPayment::whereBetween(
+        $salePaymentAmount = SalesPayment::whereBetween(
             'payment_date',
             [$request->get('start_date'), $request->get('end_date')]
         )->sum('amount');
-        $data['stock_exchanges_paid_amount'] = StockExchange::where('payment_status', 1)
+
+        $data['sales_payment_amount'] = $this->filterTaxAndShipping($salePaymentAmount, $sales, $isTaxExclusive, $isShippingExclusive);
+
+        $stockExchangePaidAmount = StockExchange::where('payment_status', 1)
             ->whereBetween(
                 'date',
                 [$request->get('start_date'), $request->get('end_date')]
             )->sum('grand_total');
+            
+        $data['stock_exchanges_paid_amount'] = $this->filterTaxAndShipping($stockExchangePaidAmount, $stockExchanges, $isTaxExclusive, $isShippingExclusive);
+
         $data['Revenue'] = ($data['sales'] + $data['stock_exchanges']) - $data['sale_returns'];
+
         $data['payments_received'] = $data['sales_payment_amount'] + $data['stock_exchanges_paid_amount'] + $data['purchase_returns'];
 
         $productCost = 0;
         $productItemCost = 0;
 
-        $sales = Sale::whereBetween(
-            'date',
-            [$request->get('start_date'), $request->get('end_date')]
-        )->with('saleItems')->get();
+        $sales = $sales->with('saleItems')->get();
 
         $allSaleReturnsItems = SaleReturnItem::join('sales_return', 'sales_return.id', '=', 'sale_return_items.sale_return_id')
             ->join('sales', 'sales.id', '=', 'sales_return.sale_id')
             ->whereBetween('sales.date', [$request->get('start_date'), $request->get('end_date')])
+            ->whereIn('sale_return_id', $saleReturns->pluck('id')->toArray())
             ->select('sale_return_items.quantity', 'sale_return_items.product_id')
             ->with('product')
             ->get();
@@ -629,11 +677,7 @@ class ReportAPIController extends AppBaseController
 
         $data['product_cost'] = $productCost - $productItemCost;
 
-        $stockExchangesIds = StockExchange::whereBetween(
-            'date',
-            [$request->get('start_date'), $request->get('end_date')]
-        )->pluck('id')->toArray();
-        $stockExchanges = StockExchange::whereIn('id', $stockExchangesIds);
+        $stockExchangesIds = $stockExchanges->pluck('id')->toArray();
 
         $returnInItems = StockExchangeReturnInItem::whereIn('stock_exchange_id', $stockExchangesIds);
         $returnOutItems = StockExchangeReturnOutItem::whereIn('stock_exchange_id', $stockExchangesIds);
@@ -641,14 +685,30 @@ class ReportAPIController extends AppBaseController
         // cost & price
         $returnInCost = $returnInItems->sum('product_cost');
         $returnOutCost = $returnOutItems->sum('product_cost');
-        $returnInPrice = $returnInItems->sum('product_price');
+        // $returnInPrice = $returnInItems->sum('product_price');
+        $returnInPrice = 0;
+        foreach($returnInItems->get() as $item) {
+            $saleItem = $item->saleItem();
+            if($saleItem->product_price !== $saleItem->net_unit_price) {
+                $returnInPrice += $saleItem->net_unit_price;
+            } else {
+                $returnInPrice += $item->product_price ?? 0;
+            }
+        }
         $returnOutPrice = $returnOutItems->sum('product_price');
 
         // discount & tax
         $stockExchangeDiscount = $stockExchanges->sum('discount');
         $stockExchangeTax = $stockExchanges->sum('tax_amount');
+        $stockExchangeShipping = $stockExchanges->sum('shipping');
 
-        $data['stock_exchange_profit'] = (($returnOutPrice + $stockExchangeTax) - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+        $data['stock_exchange_profit'] = ($returnOutPrice + $stockExchangeTax + $stockExchangeShipping - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
+        if($isTaxExclusive === true || $isTaxExclusive === 'true') {
+            $data['stock_exchange_profit'] = $data['stock_exchange_profit'] - $stockExchangeTax;
+        }
+        if($isShippingExclusive === true || $isShippingExclusive === 'true') {
+            $data['stock_exchange_profit'] = $data['stock_exchange_profit'] - $stockExchangeShipping;
+        }
         // $data['stock_exchange_profit'] = ($returnOutPrice - $stockExchangeDiscount - $returnOutCost) - ($returnInPrice - $returnInCost);
 
         $data['gross_profit'] = ($data['sales'] + $data['stock_exchange_profit']) - $data['product_cost'] - $data['sale_returns'];

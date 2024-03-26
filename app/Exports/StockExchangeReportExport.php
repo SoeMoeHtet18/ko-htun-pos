@@ -70,7 +70,7 @@ class StockExchangeReportExport implements FromView
         }
 
         $stockExchanges = $stockExchanges->get();
-
+        
         return view('excel.all-stock-exchange-report-excel', ['stockExchanges' => $stockExchanges]);
     }
 }

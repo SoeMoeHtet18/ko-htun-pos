@@ -68,11 +68,26 @@ class StockExchangeReturnInItem extends BaseModel implements JsonResourceful
 
     public function stockExchanges(): BelongsTo
     {
-        return $this->belongsTo(StockExchange::class, 'id', 'stock_exchange_id');
+        return $this->belongsTo(StockExchange::class, 'stock_exchange_id', 'id');
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
+
+    public function saleItem()
+    {
+        $stockExchange = $this->stockExchanges()->first();
+        
+        if ($stockExchange) {
+            $sales = $stockExchange->sales;
+            $saleItems = $sales->saleItems;
+
+            return $saleItems->firstWhere('product_id', $this->product_id);
+        }
+        
+        return null;
+    }
+
 }

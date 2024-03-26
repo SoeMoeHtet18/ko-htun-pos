@@ -7,6 +7,7 @@ import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { baseUnitOptions, paymentStatusOptions, paymentTypeOptions, statusOptions, transferStatusOptions } from "../../constants";
 import { fetchAllBaseUnits } from "../../store/action/baseUnitsAction";
+import Switch from 'react-bootstrap-v5/lib/esm/Switch';
 
 const FilterDropdown = ( props ) => {
     const {
@@ -32,65 +33,71 @@ const FilterDropdown = ( props ) => {
         onTransferStatusChange,
         transferStatus,
         fetchAllBaseUnits,
-        base
+        base,
+        isTax,
+        isTaxExclusive,
+        onTaxChange,
+        isShipping,
+        isShippingExclusive,
+        onShippingChange
     } = props;
 
     const dispatch = useDispatch();
     const isReset = useSelector( ( state ) => state.resetOption );
     const isShow = useSelector( ( state ) => state.dropDownToggle );
     const menuRef = useRef( null );
-    const baseUnitFilterOptions = getFormattedOptions( baseUnitOptions )
-    const statusFilterOptions = getFormattedOptions( statusOptions )
-    const paymentFilterOptions = getFormattedOptions( paymentStatusOptions )
-    const paymentTypeFilterOptions = getFormattedOptions( paymentTypeOptions )
+    const baseUnitFilterOptions = getFormattedOptions( baseUnitOptions );
+    const statusFilterOptions = getFormattedOptions( statusOptions );
+    const paymentFilterOptions = getFormattedOptions( paymentStatusOptions );
+    const paymentTypeFilterOptions = getFormattedOptions( paymentTypeOptions );
 
     useEffect( () => {
         fetchAllBaseUnits()
-    }, [ fetchAllBaseUnits ] )
+    }, [ fetchAllBaseUnits ] );
 
-    const transferStatusFilterOptions = getFormattedOptions( transferStatusOptions )
+    const transferStatusFilterOptions = getFormattedOptions( transferStatusOptions );
 
     const unitDefaultValue = baseUnitFilterOptions.map( ( option ) => {
         return {
             value: option.id,
             label: option.name
         }
-    } )
+    } );
 
     const statusDefaultValue = statusFilterOptions.map( ( option ) => {
         return {
             value: option.id,
             label: option.name
         }
-    } )
+    } );
 
     const transferStatusDefaultValue = transferStatusFilterOptions.map( ( option ) => {
         return {
             value: option.id,
             label: option.name
         }
-    } )
+    } );
 
     const paymentStatusDefaultValue = paymentFilterOptions.map( ( option ) => {
         return {
             value: option.id,
             label: option.name
         }
-    } )
+    } );
 
     const paymentTypeDefaultValue = paymentTypeFilterOptions.map( ( option ) => {
         return {
             value: option.id,
             label: option.name
         }
-    } )
+    } );
 
     const warehouseDefaultValue = warehouseOptions && warehouseOptions.map( ( option ) => {
         return {
             value: option.id,
             label: option.attributes.name
         }
-    } )
+    } );
 
     const onReset = () => {
         dispatch( { type: 'RESET_OPTION', payload: true } )
@@ -125,8 +132,8 @@ const FilterDropdown = ( props ) => {
         return () => {
             document.body.removeEventListener( "click", onClickOutside );
         }
-    }, [] )
-
+    }, [] );
+    console.log(isReset, isTaxExclusive);
     return (
         <Dropdown className='me-3 mb-2 filter-dropdown order-1 order-sm-0' show={isShow} ref={menuRef}>
             <Dropdown.Toggle variant='primary' className='text-white btn-icon hide-arrow' id='filterDropdown'
@@ -134,6 +141,32 @@ const FilterDropdown = ( props ) => {
                 <FontAwesomeIcon icon={faFilter} />
             </Dropdown.Toggle>
             <Dropdown.Menu className='px-7 py-5'>
+                {
+                    isTax ? 
+                    <Switch
+                        type="switch"
+                        id="tax-switch"
+                        label="Is Tax Exclusive"
+                        className='mb-5'
+                        onChange={(e) => onTaxChange(e.target.checked)}
+                        checked={isTaxExclusive}
+                    >
+                    </Switch>
+                    : null
+                }
+                {
+                    isShipping ? 
+                    <Switch
+                        type="switch"
+                        id="shipping-switch"
+                        label="Is Shipping Exclusive"
+                        className='mb-5'
+                        onChange={(e) => onShippingChange(e.target.checked)}
+                        checked={isShippingExclusive}
+                    >
+                    </Switch>
+                    : null
+                }
                 {isStatus ?
                     <Dropdown.Header onClick={( e ) => {
                         e.stopPropagation();

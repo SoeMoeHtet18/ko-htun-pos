@@ -117,5 +117,16 @@ export default (
         }
         url += "name=" + filters.adminName;
     }
+     if (filters.is_tax_exclusive || filters.is_shipping_exclusive) {
+        if (baseUrl.indexOf("?") > 0 || (url.includes("?") && url.length > 1)) {
+            url += "&";
+        }
+        url =
+            url +
+            "is_tax_exclusive=" +
+            filters.is_tax_exclusive +
+            "&is_shipping_exclusive=" +
+            filters.is_shipping_exclusive;
+    }
     return url;
 };

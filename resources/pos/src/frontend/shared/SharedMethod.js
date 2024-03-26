@@ -11,12 +11,17 @@ export const calculateDiscount = ( totalCost ) => {
 
 //count tax on price
 export const calculateTax = ( totalCost, finalCount ) => {
-    if ( totalCost.tax_type === '2' || totalCost.tax_type === 2 ) {
-        totalCost = +finalCount
-    } else if ( totalCost.tax_type === '1' || totalCost.tax_type === 1 ) {
-        let exclusiveTax = totalCost.tax_type === '1' || totalCost.tax_type === 1 ? parseFloat( finalCount ).toFixed( 2 ) * Number( totalCost.tax_value ) / Number( 100 ) : 0;
-        totalCost = ( +finalCount + ( exclusiveTax ) );
+    if(totalCost.tax_value !== 'NaN' && totalCost.tax_amount !== NaN) {
+        if ( totalCost.tax_type === '2' || totalCost.tax_type === 2 ) {
+            totalCost = +finalCount
+        } else if ( totalCost.tax_type === '1' || totalCost.tax_type === 1 ) {
+            let exclusiveTax = totalCost.tax_type === '1' || totalCost.tax_type === 1 ? parseFloat( finalCount ).toFixed( 2 ) * Number( totalCost.tax_value ) / Number( 100 ) : 0;
+            totalCost = ( +finalCount + ( exclusiveTax ) );
+        }
+    } else {
+        totalCost = +finalCount;
     }
+    
     return totalCost;
 };
 
@@ -25,5 +30,6 @@ export const calculateProductCost = ( product ) => {
     let finalCount = 0;
     finalCount = calculateDiscount( product );
     finalCount = calculateTax( product, finalCount );
+
     return +finalCount;
 };

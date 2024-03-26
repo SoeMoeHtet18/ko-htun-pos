@@ -55,7 +55,7 @@
                     @php
                     $item_price = 0;
                     foreach($sale->saleItems as $item) {
-                        $item_price += $item->product_price;
+                        $item_price += $item->product_price  === $item->net_unit_price ? $item->product_price : $item->net_unit_price;
                     }
                     $saleTotalPrice += $item_price;
                     echo $item_price;
@@ -129,7 +129,12 @@
                     @php
                     $return_in_price = 0;
                     foreach($stockExchange->returnInItems as $item) {
-                    $return_in_price += $item->product_price ?? 0;
+                        $saleItem = $item->saleItem();
+                        if($saleItem->product_price !== $saleItem->net_unit_price) {
+                            $return_in_price += $saleItem->net_unit_price;
+                        } else {
+                            $return_in_price += $item->product_price ?? 0;
+                        }
                     }
                     $returnInTotalPrice += $return_in_price;
                     @endphp
@@ -215,7 +220,7 @@
                     @php
                     $item_price = 0;
                     foreach($saleReturn->saleReturnItems as $item) {
-                        $item_price += $item->product_price;
+                        $item_price += $item->product_price === $item->net_unit_price ? $item->product_price : $item->net_unit_price;
                     }
                     $saleReturnTotalPrice += $item_price;
                     echo $item_price;
