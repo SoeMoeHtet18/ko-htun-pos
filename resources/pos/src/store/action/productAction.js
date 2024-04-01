@@ -180,9 +180,9 @@ export const fetchAllProducts = () => async (dispatch) => {
         });
 };
 
-export const fetchProductsByWarehouse = (id) => async (dispatch) => {
+export const fetchProductsByWarehouse = (id, type) => async (dispatch) => {
     apiConfig
-        .get(`products?page[size]=0&warehouse_id=${id}`)
+        .get(`products?page[size]=0&warehouse_id=${id}&exclusive_stock=${type ?? false}`)
         .then((response) => {
             dispatch({
                 type: productActionType.FETCH_PRODUCTS_BY_WAREHOUSE,

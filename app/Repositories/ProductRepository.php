@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseItem;
+use App\Models\Setting;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -188,6 +189,10 @@ class ProductRepository extends BaseRepository
 
                 manageStock($purchaseStock['warehouse_id'], $product->id, $purchaseStock['quantity']);
 
+            } else {
+                $defaultWarehouseId = Setting::where('key', 'default_warehouse')->first()->value;
+
+                manageStock($defaultWarehouseId, $product->id, 0);
             }
 
             DB::commit();
