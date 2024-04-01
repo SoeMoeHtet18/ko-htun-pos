@@ -43,6 +43,9 @@ const ConversionForm = ( props ) => {
         date: '',
         warehouse_id: '',
     } );
+    const [isProductFetched, setIsProductFetched] = useState(false);
+    const [stockInProducts, setStockInProducts] = useState();
+    const [stockOutProducts, setStockOutProducts] = useState();
 
     useEffect( () => {
         setUpdateStockInProducts( updateStockInProducts )
@@ -66,9 +69,31 @@ const ConversionForm = ( props ) => {
         fetchFrontSetting();
     }, [] )
 
-    useEffect( () => {
-        conversionValue.warehouse_id.value && fetchProductsByWarehouse( conversionValue?.warehouse_id?.value )
-    }, [ conversionValue.warehouse_id.value ] )
+     useEffect(() => {
+        if (conversionValue.warehouse_id.value) {
+            fetchProductsByWarehouse(conversionValue.warehouse_id.value)
+                .then(() => {
+                    setIsProductFetched(true);
+                })
+                .catch(error => {
+                    console.error('Error fetching products:', error);
+                });
+        }
+    }, [conversionValue.warehouse_id.value]);;
+
+    useEffect(() => {
+        if(isProductFetched === true) {
+            if(conversionValue.warehouse_id.value) {
+                fetchProductsByWarehouse( conversionValue?.warehouse_id?.value , true)
+                    .then(() => {
+                        setIsProductFetched(false);
+                    })
+                    .catch(error => {
+                    console.error('Error fetching products:', error);
+                });
+            }
+        }
+    }, [isProductFetched]);
 
     useEffect( () => {
         if ( singleConversion ) {
